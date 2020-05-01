@@ -6,7 +6,7 @@ const devUrl = 'http://localhost:4000/graphql'
 const prodUrl = 'https://api.wizardry-logs.com/graphql'
 
 // const clientUrl = process.env.NODE_ENV === 'production' ? prodUrl : devUrl
-const clientUrl ) devUrl
+const clientUrl = devUrl
 const client = new GraphQLClient(clientUrl, {
   headers: {
     Authorization: config.graphqlToken
