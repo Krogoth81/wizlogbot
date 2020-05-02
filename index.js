@@ -13,10 +13,13 @@ const answers = [
   "I don't understand!",
   "Really now?",
   "\*whistles\*",
-  "... I'm too old for this shit",
+  "Exactly!",
+  "No way!?",
   "Could you repeat that?",
   "You're not making any sense",
-  "Wow. I can't believe you said that!"
+  "Wow. I can't believe you said that!",
+  "Haha! :laughing: That's hilarious!",
+  "Sorry, I'm busy grinding my gears."
 ]
 
 
@@ -41,14 +44,6 @@ const directMsg = async (msg) => {
 
 const commands = requireDir('commands')
 
-const context = {
-  bot,
-  bootTime,
-  CONFIG,
-  query,
-  commands
-}
-
 const channelMsg = async (msg) => {
   const COMMAND = 1
   const CONTENT = 3
@@ -59,6 +54,15 @@ const channelMsg = async (msg) => {
 
   let key = regexMatch[COMMAND].toLowerCase()
   let content = regexMatch[CONTENT]
+
+  const context = {
+    bot,
+    bootTime,
+    CONFIG,
+    query: query.init(msg),
+    commands
+  }
+
   if (key) commands[key](msg, content, context)
 }
 

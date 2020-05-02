@@ -7,11 +7,6 @@ const prodUrl = 'https://api.wizardry-logs.com/graphql'
 
 const clientUrl = process.env.NODE_ENV === 'production' ? prodUrl : devUrl
 
-const client = new GraphQLClient(clientUrl, {
-  headers: {
-    Authorization: config.graphqlToken
-  },
-})
 
 const query = `
   query Search($channel: String!, $searchString: String!, $limit: Int) {
@@ -52,8 +47,8 @@ const randomQuery = `
 `
 
 const generateInvite = `
-  mutation GenerateInvite($discordId: String!, $nick: String) {
-    generateInviteForUser(discordId: $discordId, nick: $nick) {
+  mutation GenerateInvite($discordid: String!, $nick: String) {
+    generateInviteForUser(discordid: $discordid, nick: $nick) {
       message
       url
       success
@@ -61,38 +56,83 @@ const generateInvite = `
   }
 `
 
-
-const search = async (channel, searchString) => {
-  try {
-    let { searchInChannel } = await client.request(query, {channel, searchString, limit: 1})
-    let item = searchInChannel.count > 0 ? searchInChannel.items[0] : null
-    return item
-  } catch (e) {
-    console.log(new Date(), "An error occured. Noooo!\n", e)
+const statusReportQuery = `
+  query StatusReport {
+    generateStatusReport {
+      totalCount
+      users
+      searchRequests
+      randomRequests
+      invites
+      uptime
+    }
   }
-}
+`
 
+const init = (msg) => {
+  const discordid = msg.author.id
+  const nick = msg.author.username
 
-const random = async () => {
-  try {
-    let { findRandomMessage } = await client.request(randomQuery)
-    return findRandomMessage
-  } catch (e) {
-    console.log(new Date(), "Oopsie", e)
+  const client = new GraphQLClient(clientUrl, {
+    headers: {
+      Authorization: config.graphqlToken,
+      discordid,
+      nick,
+    },
+  })
+
+  const search = async (channel, searchString) => {
+    try {
+      let { searchInChannel } = await client.request(query, { channel, searchString, limit: 1})
+      let item = searchInChannel.count > 0 ? searchInChannel.items[0] : null
+      return item
+    } catch (e) {
+      console.log(new Date, "Errored during search query", e)
+      return null
+    }
   }
-}
 
-const auth = async (discordId, nick) => {
-  try {
-    let { generateInviteForUser } = await client.request(generateInvite, { discordId, nick })
-    return generateInviteForUser
-  } catch (e) {
-    console.log(new Date(), "Error error!", e)
+
+  const random = async () => {
+    try {
+      let { findRandomMessage } = await client.request(randomQuery)
+      return findRandomMessage
+    } catch (e) {
+      console.log(new Date, "Errored during random query", e)
+      return null
+    }
+  }
+
+  const auth = async () => {
+    try {
+      let { generateInviteForUser } = await client.request(generateInvite)
+      return generateInviteForUser
+    } catch (e) {
+      console.log(new Date, "Errored during auth query", e)
+      return null
+    }
+  }
+
+  const getStatus = async () => {
+    try {
+      let { generateStatusReport } = await client.request(statusReportQuery)
+      return generateStatusReport
+    } catch (e) {
+      console.log(new Date, "Errored during getStatus query", e)
+      return null
+    }
+  }
+
+
+
+  return {
+    search,
+    random,
+    auth,
+    getStatus
   }
 }
 
 module.exports = {
-  search,
-  random,
-  auth
+  init
 }
