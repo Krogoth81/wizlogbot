@@ -84,7 +84,7 @@ const init = (msg) => {
   const search = async (channel, searchString) => {
     try {
       let { searchInChannel } = await client.request(query, { channel, searchString, limit: 1})
-      let item = searchInChannel.count > 0 ? searchInChannel.items[0] : null
+      let item = searchInChannel && searchInChannel.count > 0 ? searchInChannel.items[0] : null
       return item
     } catch (e) {
       console.log(new Date, "Errored during search query", e)
