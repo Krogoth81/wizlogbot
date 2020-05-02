@@ -5,18 +5,19 @@ module.exports = async (msg, content, { query }) => {
     msg.channel.send(`@${msg.author.username} Søkestreng for kort.`)
     return null
   }
-  let logItem = await query.search('#wizardry', `${content}`)
+  let response = await query.search('#wizardry', `${content}`)
   isExecuting = false
-  if (!logItem) {
+  if (!response || response.count === 0) {
     msg.channel.send(`>>> Searching for: "_${content}_"
       _Ingen treff_  :confused:`
     )
   } else {
+    let logItem = response.items[0]
     let author = logItem.author.toString()
     let output = logItem.message.toString()
     let reply = ''
     reply += `> Søkte etter: "_${content}_"\n`
-    reply += `> Fikk ${logItem.count} treff. Viser første:`
+    reply += `> Fikk ${response.count} treff. Viser første:\n`
     reply += `<https://wizardry-logs.com?id=${logItem._id.toString()}>\n`
     reply += `[${moment(logItem.createdAt).format('DD-MM-YYYY HH:mm')}]\n`
     reply += `**${author}** wrote:\n`

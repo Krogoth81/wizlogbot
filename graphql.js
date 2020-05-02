@@ -8,7 +8,7 @@ const prodUrl = 'https://api.wizardry-logs.com/graphql'
 const clientUrl = process.env.NODE_ENV === 'production' ? prodUrl : devUrl
 
 
-const query = `
+const searchQuery = `
   query Search($channel: String!, $searchString: String!, $limit: Int) {
     searchInChannel(channel: $channel, searchString: $searchString, limit: $limit) {
       count
@@ -47,8 +47,8 @@ const randomQuery = `
 `
 
 const generateInvite = `
-  mutation GenerateInvite($discordid: String!, $nick: String) {
-    generateInviteForUser(discordid: $discordid, nick: $nick) {
+  mutation GenerateInvite {
+    generateInviteForUser {
       message
       url
       success
@@ -83,9 +83,8 @@ const init = (msg) => {
 
   const search = async (channel, searchString) => {
     try {
-      let { searchInChannel } = await client.request(query, { channel, searchString, limit: 1})
-      let item = searchInChannel && searchInChannel.count > 0 ? searchInChannel.items[0] : null
-      return item
+      let { searchInChannel } = await client.request(searchQuery, { channel, searchString, limit: 1})
+      return searchInChannel
     } catch (e) {
       console.log(new Date, "Errored during search query", e)
       return null
