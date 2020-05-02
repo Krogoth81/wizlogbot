@@ -22,7 +22,7 @@ const answers = [
 
 const directMsg = async (msg) => {
   try {
-    if (msg.content.startsWith('!authme')) {
+    if (msg.content.match(/^\!authme(\s|$)/)) {
       const { success, url, message } = await query.auth(msg.author.id, msg.author.username)
       if (success) msg.channel.send(`>>> ${message}\n${url}`)
       else msg.channel.send(`>>> ${message}`)
