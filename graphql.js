@@ -75,7 +75,7 @@ const init = (msg) => {
 
   const client = new GraphQLClient(clientUrl, {
     headers: {
-      Authorization: config.graphqlToken,
+      botaccess: config.graphqlToken,
       discordid,
       nick,
     },
