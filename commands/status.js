@@ -29,7 +29,7 @@ module.exports = async (msg, content, { query, bootTime }) => {
   reply += `Number of search requests: ${searchRequests}\n`
   reply += `Number of random requests: ${randomRequests}\n`
   reply += `I've sent ${invites} invite links\n`
-  reply += `Current server uptime: ${umonths && `${umonths} månder, `}${udd && `${udd} dager, `}${uhh && `${uhh} timer, `}${umm && `${umm} minutter, `}${uss && `${uss} sekunder, \n`
+  reply += `Current server uptime: ${umonths && `${umonths} månder, `}${udd && `${udd} dager, `}${uhh && `${uhh} timer, `}${umm && `${umm} minutter, `}${uss && `${uss} sekunder`} \n`
   reply += `Current bot uptime: ${dd} ${hh} ${mm} ${ss}\`\`\``
 
   msg.channel.send(reply)
