@@ -102,7 +102,7 @@ const init = (msg) => {
     }
   }
 
-  const auth = async () => {
+  const authMe = async () => {
     try {
       let { generateInviteForUser } = await client.request(generateInvite)
       return generateInviteForUser
@@ -127,7 +127,7 @@ const init = (msg) => {
   return {
     search,
     random,
-    auth,
+    authMe,
     getStatus
   }
 }

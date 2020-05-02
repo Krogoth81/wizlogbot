@@ -22,14 +22,15 @@ const answers = [
   "Sorry, I'm busy grinding my gears."
 ]
 
+const commands = requireDir('commands')
 
 const directMsg = async (msg) => {
   try {
     if (msg.content.match(/^\!authme(\s|$)/)) {
-      const { success, url, message } = await query.auth(msg.author.id, msg.author.username)
+      let response = await query.init(msg).authMe()
+      const { success, url, message } = response
       if (success) msg.channel.send(`>>> ${message}\n${url}`)
       else msg.channel.send(`>>> ${message}`)
-
     } else {
       let randomLine = answers[Math.floor(Math.random() * answers.length)]
       msg.channel.send(randomLine)
@@ -38,11 +39,6 @@ const directMsg = async (msg) => {
     console.log(e)
   }
 }
-
-
-
-
-const commands = requireDir('commands')
 
 const channelMsg = async (msg) => {
   const COMMAND = 1
