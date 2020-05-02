@@ -15,12 +15,12 @@ module.exports = async (msg, content, { query, bootTime }) => {
   }
 
   const { totalCount, users, searchRequests, randomRequests, invites, uptime } = response
-  let up = moment.duration(moment().diff(uptime))
-  let umonths = `${up.months()}months`
-  let udd = `${up.days()}d`
-  let uhh = `${up.hours()}h`
-  let umm = `${up.minutes()}m`
-  let uss = `${up.seconds()}s`
+  let up = moment.duration(moment().diff(moment(uptime)))
+  let umonths = up.months()
+  let udd = up.days()
+  let uhh = up.hours()
+  let umm = up.minutes()
+  let uss = up.seconds()
 
   let reply = ''
   reply += `Current Status:\n`
@@ -29,7 +29,7 @@ module.exports = async (msg, content, { query, bootTime }) => {
   reply += `Number of search requests: ${searchRequests}\n`
   reply += `Number of random requests: ${randomRequests}\n`
   reply += `I've sent ${invites} invite links\n`
-  reply += `Current server uptime: ${udd} ${uhh} ${umm} ${uss}\n`
+  reply += `Current server uptime: ${umonths && `${umonths} månder, `}${udd && `${udd} dager, `}${uhh && `${uhh} timer, `}${umm && `${umm} minutter, `}${uss && `${uss} sekunder, \n`
   reply += `Current bot uptime: ${dd} ${hh} ${mm} ${ss}\`\`\``
 
   msg.channel.send(reply)
