@@ -7,7 +7,7 @@ const prodUrl = 'https://api.wizardry-logs.com/graphql'
 
 const clientUrl = process.env.NODE_ENV === 'production' ? prodUrl : devUrl
 
-const addRequest = `
+const addRequestMutation = `
   mutation AddFeatureRequest($content: String) {
     addFeatureRequest(content: $content)
   }
@@ -129,7 +129,7 @@ const init = (msg) => {
 
   const addRequest = async () => {
     try {
-      let res = await client.request(addFeatureRequest)
+      let res = await client.request(addRequestMutation)
       return res
     } catch (e) {
       console.log(new Date(), "Errored during addRequest mutation", e)
