@@ -7,6 +7,11 @@ const prodUrl = 'https://api.wizardry-logs.com/graphql'
 
 const clientUrl = process.env.NODE_ENV === 'production' ? prodUrl : devUrl
 
+const addRequest = `
+  mutation AddFeatureRequest($content: String) {
+    addFeatureRequest(content: $content)
+  }
+`
 
 const searchQuery = `
   query Search($channel: String!, $searchString: String!, $limit: Int) {
@@ -86,7 +91,7 @@ const init = (msg) => {
       let { searchInChannel } = await client.request(searchQuery, { channel, searchString, limit: 1})
       return searchInChannel
     } catch (e) {
-      console.log(new Date, "Errored during search query", e)
+      console.log(new Date(), "Errored during search query", e)
       return null
     }
   }
@@ -97,7 +102,7 @@ const init = (msg) => {
       let { findRandomMessage } = await client.request(randomQuery)
       return findRandomMessage
     } catch (e) {
-      console.log(new Date, "Errored during random query", e)
+      console.log(new Date(), "Errored during random query", e)
       return null
     }
   }
@@ -107,7 +112,7 @@ const init = (msg) => {
       let { generateInviteForUser } = await client.request(generateInvite)
       return generateInviteForUser
     } catch (e) {
-      console.log(new Date, "Errored during auth query", e)
+      console.log(new Date(), "Errored during auth query", e)
       return null
     }
   }
@@ -117,7 +122,17 @@ const init = (msg) => {
       let { generateStatusReport } = await client.request(statusReportQuery)
       return generateStatusReport
     } catch (e) {
-      console.log(new Date, "Errored during getStatus query", e)
+      console.log(new Date(), "Errored during getStatus query", e)
+      return null
+    }
+  }
+
+  const addRequest = async () => {
+    try {
+      let res = await client.request(addFeatureRequest)
+      return res
+    } catch (e) {
+      console.log(new Date(), "Errored during addRequest mutation", e)
       return null
     }
   }
@@ -128,7 +143,8 @@ const init = (msg) => {
     search,
     random,
     authMe,
-    getStatus
+    getStatus,
+    addRequest
   }
 }
 

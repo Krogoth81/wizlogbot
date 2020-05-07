@@ -1,9 +1,11 @@
 const Discord = require('discord.js')
 const moment = require('moment')
+require('moment/locale/nb')
+
 const CONFIG = require('./config.json') // Not included - make your own!
 const requireDir = require('require-dir')
 const query = require('./graphql')
-
+const _ = require('lodash')
 
 const bot = new Discord.Client()
 const bootTime = moment()
