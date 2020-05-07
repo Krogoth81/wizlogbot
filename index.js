@@ -1,6 +1,7 @@
 const Discord = require('discord.js')
-const moment = require('moment')
-require('moment/locale/nb')
+const moment = require('moment-timezone')
+moment.locale('nb')
+moment.tz.setDefault('Europe/Oslo')
 
 const CONFIG = require('./config.json') // Not included - make your own!
 const requireDir = require('require-dir')
