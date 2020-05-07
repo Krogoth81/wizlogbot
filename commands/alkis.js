@@ -87,7 +87,7 @@ module.exports = async (msg, content, { CONFIG }) => {
   let cnNow = momCloseNext.from(now)
 
   let reply = `Polsalg - ${now.format(dfPlus)} - ${data.storeName}\n`
-  reply += `Status: ${now.isAfter(momOpenToday) && now.isBefore(momCloseToday) ? '*Åpent*' : '*Stengt*'}\n`
+  reply += `Status: ${now.isAfter(momOpenToday) && now.isBefore(momCloseToday) ? '**Åpent**' : '**Stengt**'}\n`
   todayExceptionMessage.forEach(em => {
     reply += `> ${em}\n`
   })
