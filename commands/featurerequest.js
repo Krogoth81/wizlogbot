@@ -3,7 +3,7 @@ const moment = require('moment')
 module.exports = async (msg, content, { query }) => {
 
   let response = await query.addRequest(content)
-  let reply = '>>>'
+  let reply = '>>> '
 
   if (response) {
     reply += `Feature request lagt til:`
