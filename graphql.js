@@ -133,9 +133,9 @@ const init = (msg) => {
     }
   }
 
-  const addRequest = async () => {
+  const addRequest = async (content) => {
     try {
-      let { addFeatureRequest } = await client.request(addRequestMutation)
+      let { addFeatureRequest } = await client.request(addRequestMutation, { content })
       return addFeatureRequest
     } catch (e) {
       console.log(new Date(), "Errored during addRequest mutation", e)
