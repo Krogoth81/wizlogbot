@@ -9,7 +9,13 @@ const clientUrl = process.env.NODE_ENV === 'production' ? prodUrl : devUrl
 
 const addRequestMutation = `
   mutation AddFeatureRequest($content: String) {
-    addFeatureRequest(content: $content)
+    addFeatureRequest(content: $content) {
+      createdAt
+      createdBy
+      content
+      resolvedAt
+      comment
+    }
   }
 `
 
@@ -129,8 +135,8 @@ const init = (msg) => {
 
   const addRequest = async () => {
     try {
-      let res = await client.request(addRequestMutation)
-      return res
+      let { addFeatureRequest } = await client.request(addRequestMutation)
+      return addFeatureRequest
     } catch (e) {
       console.log(new Date(), "Errored during addRequest mutation", e)
       return null
