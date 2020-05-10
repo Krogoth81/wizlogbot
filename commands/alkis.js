@@ -19,7 +19,8 @@ module.exports = async (msg, content, { CONFIG }) => {
       'Ocp-Apim-Subscription-Key': CONFIG.vinmonopolKey
     }
   })
-  const list = await res.json()
+  let list = null
+  if (res) list = await res.json()
 
   if (_.isEmpty(list)) {
     msg.channel.send(`Fant ingen treff på ${content}`)
