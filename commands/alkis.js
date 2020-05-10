@@ -20,7 +20,9 @@ module.exports = async (msg, content, { CONFIG }) => {
     }
   })
   let list = null
-  if (res) list = await res.json()
+  try {
+    list = await res.json()
+  } catch () {}
 
   if (_.isEmpty(list)) {
     msg.channel.send(`Fant ingen treff på ${content}`)
