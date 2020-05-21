@@ -111,7 +111,7 @@ module.exports = async (msg, content, { CONFIG }) => {
           reply += `> ${nem}\n`
         })
       }
-      reply += `Åpner igjen ${onNow} (${momOpenNext})\n`
+      reply += `Åpner igjen ${onNow} (${onf})\n`
       reply += `Og stenger ${cnNow} (${cnf})`
     }
   }

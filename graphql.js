@@ -80,6 +80,12 @@ const statusReportQuery = `
   }
 `
 
+const getRandomString = `
+  query getRandomString {
+    getRandomString
+  }
+`
+
 const init = (msg) => {
   const discordid = msg.author.id
   const nick = msg.author.username
@@ -143,6 +149,16 @@ const init = (msg) => {
     }
   }
 
+  const randomResponse = async (content) => {
+    try {
+      let { randomResponse } = await client.request(getRandomString, { content })
+      return randomResponse
+    } catch (e) {
+      console.log(new Date(), "Errored during randomResponse mutation", e)
+      return null
+    }
+  }
+
 
 
   return {
@@ -150,7 +166,8 @@ const init = (msg) => {
     random,
     authMe,
     getStatus,
-    addRequest
+    addRequest,
+    randomResponse,
   }
 }
 
