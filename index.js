@@ -67,24 +67,43 @@ const channelMsg = async (msg) => {
 
 const start = async () => {
 
-  bot.on('ready', () => {
+  bot.on('ready', async () => {
     console.log("READY!")
     console.log('Logged in as %s', bot.user.tag)
   })
 
-  bot.on('message', async (msg) => {
-    if (msg.author.bot) return null
-    const type = msg.channel.type
-    switch (type) {
-      case 'dm':
+  if (process.env.NODE_ENV !== 'production') {
+    bot.on('message', async (msg) => {
+      if (msg.guild.name !== 'Forged Alliance FOREVAH!' && msg.channel.name !== 'bot-tester') return null
+      // ||========= TEST-STUFF GOES HERE ============||
+      if (msg.author.bot) return null
+      const type = msg.channel.type
+      switch (type) {
+        case 'dm':
         directMsg(msg)
         break
-      case 'text':
+        case 'text':
         channelMsg(msg)
-      default:
-    }
-    return null
-  })
+        default:
+      }
+      return null
+      // ||===========================================||
+    })
+  } else {
+    bot.on('message', async (msg) => {
+      if (msg.author.bot) return null
+      const type = msg.channel.type
+      switch (type) {
+        case 'dm':
+        directMsg(msg)
+        break
+        case 'text':
+        channelMsg(msg)
+        default:
+      }
+      return null
+    })
+  }
 
   bot.login(CONFIG.botToken)
   console.log("Connecting!")

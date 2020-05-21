@@ -57,6 +57,15 @@ const randomQuery = `
   }
 `
 
+const getRandomComplaintQuery = `
+  query GetRandomComplaint {
+    getRandomComplaint {
+      channelid
+      messageid
+    }
+  }
+`
+
 const generateInvite = `
   mutation GenerateInvite {
     generateInviteForUser {
@@ -86,6 +95,12 @@ const getRandomString = `
   }
 `
 
+const registerComplaintMutation = `
+  mutation RegisterComplaint($channelid: String, $messageid: String) {
+    registerComplaint(channelid: $channelid, messageid: $messageid)
+  }
+`
+
 const init = (msg) => {
   const discordid = msg.author.id
   const nick = msg.author.username
@@ -104,6 +119,16 @@ const init = (msg) => {
       return searchInChannel
     } catch (e) {
       console.log(new Date(), "Errored during search query", e)
+      return null
+    }
+  }
+
+  const randomComplaint = async () => {
+    try {
+      let { getRandomComplaint } = await client.request(getRandomComplaintQuery)
+      return getRandomComplaint
+    } catch (e) {
+      console.log(new Date(), "Errored during random complaint query", e)
       return null
     }
   }
@@ -159,6 +184,15 @@ const init = (msg) => {
     }
   }
 
+  const registerComplaint = async (input) => {
+    try {
+      client.request(registerComplaintMutation, input)
+    } catch (e) {
+      console.log()
+      return null
+    }
+  }
+
 
 
   return {
@@ -168,6 +202,8 @@ const init = (msg) => {
     getStatus,
     addRequest,
     randomResponse,
+    randomComplaint,
+    registerComplaint,
   }
 }
 
