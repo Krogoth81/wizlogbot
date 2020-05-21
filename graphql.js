@@ -85,6 +85,7 @@ const statusReportQuery = `
       randomRequests
       invites
       uptime
+      complaints
     }
   }
 `

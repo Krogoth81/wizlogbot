@@ -14,7 +14,7 @@ module.exports = async (msg, content, { query, bootTime }) => {
     return null
   }
 
-  const { totalCount, users, searchRequests, randomRequests, invites, uptime } = response
+  const { totalCount, users, searchRequests, randomRequests, invites, uptime, complaints } = response
   let up = moment.duration(moment().diff(moment(uptime)))
   let umonths = up.months()
   let udd = up.days()
@@ -30,6 +30,7 @@ module.exports = async (msg, content, { query, bootTime }) => {
   reply += `Wizards connected: ${users}\n`
   reply += `Number of search requests: ${searchRequests}\n`
   reply += `Number of random requests: ${randomRequests}\n`
+  reply += `Number of stored items for !randomklage: ${complaints}\n`
   reply += `I've sent ${invites} invite links\n`
   reply += `Current server uptime: ${udd}d ${uhh}h ${umm}m ${uss}s\n`
   reply += `Current bot uptime: ${dd} ${hh} ${mm} ${ss}\`\`\``
