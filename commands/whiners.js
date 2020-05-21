@@ -24,7 +24,7 @@ module.exports = async (msg, content, { bot, query }) => {
       username: key,
       score: users[key]
     }
-  }).sort((o1, o2) => o1.score - o2.score)
+  }).sort((o1, o2) => o2.score - o1.score)
 
   let reply = '**Topp 10 Scoreboard - Klager**\n'
   arr.forEach((wizard, i) => {
