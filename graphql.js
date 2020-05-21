@@ -102,6 +102,15 @@ const registerComplaintMutation = `
   }
 `
 
+const allComplaintsQuery = `
+  query AllComplaints {
+    allComplaints {
+      channelid
+      messageid
+    }
+  }
+`
+
 const init = (msg) => {
   const discordid = msg.author.id
   const nick = msg.author.username
@@ -193,7 +202,15 @@ const init = (msg) => {
       return null
     }
   }
-
+  const allComplaints = async (input) => {
+    try {
+      let { allComplaints } = await client.request(allComplaintsQuery)
+      return allComplaints
+    } catch (e) {
+      console.log()
+      return null
+    }
+  }
 
 
   return {
@@ -205,6 +222,7 @@ const init = (msg) => {
     randomResponse,
     randomComplaint,
     registerComplaint,
+    allComplaints,
   }
 }
 
