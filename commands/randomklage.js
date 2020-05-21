@@ -28,7 +28,7 @@ module.exports = async (msg, content, { bot, query }) => {
       timestamp: bMsg.createdTimestamp,
     }
     return beforeMsg
-  }).sort((o1, o2) => o2.timestamp - o1.timestamp)
+  }).sort((o1, o2) => o1.timestamp - o2.timestamp)
 
 
   let timestampString = moment(targetMsg.timestamp).format('DD-MM-YYYY (HH:mm)')
