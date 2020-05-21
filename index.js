@@ -49,10 +49,19 @@ const channelMsg = async (msg) => {
   let commandRegex = new RegExp(`^\!(${Object.keys(commands).join('|')})($|\\s)(.*)$`, 'i')
 
   let regexMatch = msg.content.match(commandRegex)
-  if (!regexMatch) return null
 
-  let key = regexMatch[COMMAND].toLowerCase()
-  let content = regexMatch[CONTENT]
+
+  let key = null
+  let content = null
+
+  // NOTE Exception for !klage, might want to do soemthing about this
+  if (msg.content.match(/^!klage/i)) {
+    key = 'klage'
+  } else {
+    if (!regexMatch) return null
+    key = regexMatch[COMMAND].toLowerCase()
+    content = regexMatch[CONTENT]
+  }
 
   const context = {
     bot,
