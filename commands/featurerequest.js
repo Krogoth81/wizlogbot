@@ -5,9 +5,12 @@ module.exports = async (msg, content, { query }) => {
   let response = await query.addRequest(content)
   let reply = ''
 
+
   if (response) {
-    reply += `*Feature request lagt til:*\n`
-    reply += `> ${content}\n`
+    if (content) {
+      reply += `*Feature request lagt til:*\n`
+      reply += `> ${content}\n`
+    } 
     if (!_.isEmpty(response)) {
       let prev = ''
       let done = []
