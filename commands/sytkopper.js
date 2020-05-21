@@ -1,7 +1,7 @@
 const moment = require('moment')
 
 module.exports = async (msg, content, { bot, query }) => {
-
+  msg.channel.startTyping()
   let response = await query.allComplaints()
   if (!response) {
     msg.channel.send("> Fant ikke noen klager. Noe har gått galt.. Kroooog!")
@@ -26,10 +26,10 @@ module.exports = async (msg, content, { bot, query }) => {
     }
   }).sort((o1, o2) => o1.score - o2.score)
 
-  let reply = '**Scoreboard - Klager**\n'
+  let reply = '**Topp 10 Scoreboard - Klager**\n'
   arr.forEach((wizard, i) => {
-    reply += `#${i+1}: \`*${wizard.username}* - ${wizard.score}\`\n`
+    if (i < 10) reply += `#${i+1}: *${wizard.username}* - ${wizard.score}\n`
   })
   msg.channel.send(reply)
-
+  msg.channel.stopTyping()
 }
