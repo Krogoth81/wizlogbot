@@ -11,6 +11,8 @@ const _ = require('lodash')
 const bot = new Discord.Client()
 const bootTime = moment()
 
+const events = require('./events/index')
+
 const answers = [
   "What do you want?",
   "I don't understand!",
@@ -43,26 +45,8 @@ const directMsg = async (msg) => {
   }
 }
 
+
 const channelMsg = async (msg) => {
-  const COMMAND = 1
-  const CONTENT = 3
-  let commandRegex = new RegExp(`^\!(${Object.keys(commands).join('|')})($|\\s)(.*)$`, 'i')
-
-  let regexMatch = msg.content.match(commandRegex)
-
-
-  let key = null
-  let content = null
-
-  // NOTE Exception for !klage, might want to do soemthing about this
-  if (msg.content.match(/^!klage/i)) {
-    key = 'klage'
-  } else {
-    if (!regexMatch) return null
-    key = regexMatch[COMMAND].toLowerCase()
-    content = regexMatch[CONTENT]
-  }
-
   const context = {
     bot,
     bootTime,
@@ -70,6 +54,19 @@ const channelMsg = async (msg) => {
     query: query.init(msg),
     commands
   }
+
+  events(msg, context)
+
+  const COMMAND = 1
+  const CONTENT = 3
+  let commandRegex = new RegExp(`^\!(${Object.keys(commands).join('|')})($|\\s)(.*)$`, 'i')
+
+  let regexMatch = msg.content.match(commandRegex)
+
+  if (!regexMatch) return null
+  let key = regexMatch[COMMAND].toLowerCase()
+  let content = regexMatch[CONTENT]
+
 
   if (key) commands[key](msg, content, context)
 }
@@ -79,14 +76,16 @@ const start = async () => {
   bot.on('ready', async () => {
     console.log("READY!")
     console.log('Logged in as %s', bot.user.tag)
+    bot.user.setActivity('paint dry', { type: 'WATCHING'})
   })
 
   if (process.env.NODE_ENV !== 'production') {
     bot.on('message', async (msg) => {
+      const type = msg.channel.type
+      if (msg.author.bot) return null
+      if (type !== 'text') return null
       if (msg.guild.name !== 'Forged Alliance FOREVAH!' && msg.channel.name !== 'bot-tester') return null
       // ||========= TEST-STUFF GOES HERE ============||
-      if (msg.author.bot) return null
-      const type = msg.channel.type
       switch (type) {
         case 'dm':
         directMsg(msg)
