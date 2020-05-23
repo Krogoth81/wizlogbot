@@ -31,14 +31,31 @@ const commands = requireDir('commands')
 
 const directMsg = async (msg) => {
   try {
-    if (msg.content.match(/^\!authme(\s|$)/)) {
-      let response = await query.init(msg).authMe()
-      const { success, url, message } = response
-      if (success) msg.channel.send(`>>> ${message}\n${url}`)
-      else msg.channel.send(`>>> ${message}`)
+    if (msg.devMode) {
+      if (msg.content.match(/^_\!authme(\s|$)/)) {
+        let response = await query.init(msg).authMe()
+        if (!response) {
+          msg.channel.send('Got null response, server down?')
+          return null
+        }
+        const { success, url, message } = response
+        if (success) msg.channel.send(`>>> ${message}\n${url}`)
+        else msg.channel.send(`>>> ${message}`)
+      } else {
+        let randomLine = answers[Math.floor(Math.random() * answers.length)]
+        msg.channel.send(randomLine)
+      }
     } else {
-      let randomLine = answers[Math.floor(Math.random() * answers.length)]
-      msg.channel.send(randomLine)
+
+      if (msg.content.match(/^\!authme(\s|$)/)) {
+        let response = await query.init(msg).authMe()
+        const { success, url, message } = response
+        if (success) msg.channel.send(`>>> ${message}\n${url}`)
+        else msg.channel.send(`>>> ${message}`)
+      } else {
+        let randomLine = answers[Math.floor(Math.random() * answers.length)]
+        msg.channel.send(randomLine)
+      }
     }
   } catch (e) {
     console.log(e)
@@ -55,18 +72,19 @@ const channelMsg = async (msg) => {
     commands
   }
 
-  events(msg, context)
+  if (!msg.devMode) events(msg, context)
 
   const COMMAND = 1
   const CONTENT = 3
+
   let commandRegex = new RegExp(`^\!(${Object.keys(commands).join('|')})($|\\s)(.*)$`, 'i')
+  if (msg.devMode) commandRegex = new RegExp(`^_\!(${Object.keys(commands).join('|')})($|\\s)(.*)$`, 'i')
 
   let regexMatch = msg.content.match(commandRegex)
 
   if (!regexMatch) return null
   let key = regexMatch[COMMAND].toLowerCase()
   let content = regexMatch[CONTENT]
-
 
   if (key) commands[key](msg, content, context)
 }
@@ -81,16 +99,17 @@ const start = async () => {
 
   if (process.env.NODE_ENV !== 'production') {
     bot.on('message', async (msg) => {
+      // ||========= TEST-STUFF GOES HERE ============||
+      if (msg.author.id !== CONFIG.ownerId) return null
+      msg.devMode = true
       const type = msg.channel.type
       if (msg.author.bot) return null
-      if (type !== 'text') return null
-      if (msg.guild.name !== 'Forged Alliance FOREVAH!' && msg.channel.name !== 'bot-tester') return null
-      // ||========= TEST-STUFF GOES HERE ============||
       switch (type) {
         case 'dm':
         directMsg(msg)
         break
         case 'text':
+        if (msg.channel.name !== 'bot-tester') return null
         channelMsg(msg)
         default:
       }
