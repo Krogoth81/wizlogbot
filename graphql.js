@@ -7,6 +7,12 @@ const prodUrl = 'https://api.wizardry-logs.com/graphql'
 
 const clientUrl = process.env.NODE_ENV === 'production' ? prodUrl : devUrl
 
+const createQuizMutation = `
+  mutation createQuiz {
+    createQuiz
+  }
+`
+
 const addRequestMutation = `
   mutation AddFeatureRequest($content: String) {
     addFeatureRequest(content: $content) {
@@ -111,6 +117,12 @@ const allComplaintsQuery = `
   }
 `
 
+const lastQuizQuery = `
+  query GetLastQuiz {
+    getLastQuiz
+  }
+`
+
 const init = (msg) => {
   const discordid = msg.author.id
   const nick = msg.author.username
@@ -198,7 +210,7 @@ const init = (msg) => {
     try {
       client.request(registerComplaintMutation, input)
     } catch (e) {
-      console.log()
+      console.log(new Date(), "Errored during registerComplaint mutation", e)
       return null
     }
   }
@@ -207,8 +219,28 @@ const init = (msg) => {
       let { allComplaints } = await client.request(allComplaintsQuery)
       return allComplaints
     } catch (e) {
-      console.log()
+      console.log(new Date(), "Errored during allComplaints query", e)
       return null
+    }
+  }
+
+  const createQuiz = async () => {
+    try {
+      let { createQuiz } = await client.request(createQuizMutation)
+      return createQuiz
+    } catch (e) {
+      console.log(new Date(), "Errored during createQuiz mutation", e)
+      return e.message
+    }
+  }
+
+  const lastQuiz = async () => {
+    try {
+      let { getLastQuiz } = await client.request(lastQuizQuery)
+      return getLastQuiz
+    } catch (e) {
+      console.log(new Date(), "Errored during createQuiz mutation", e)
+      return e.message
     }
   }
 
@@ -223,6 +255,8 @@ const init = (msg) => {
     randomComplaint,
     registerComplaint,
     allComplaints,
+    createQuiz,
+    lastQuiz,
   }
 }
 

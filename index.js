@@ -1,5 +1,12 @@
+const express = require('express')
+const http = require("http")
+const app = express()
+const fs = require("fs")
 const Discord = require('discord.js')
 const moment = require('moment-timezone')
+const path = require('path')
+const cors = require('cors')
+const bodyparser = require('body-parser')
 moment.locale('nb')
 moment.tz.setDefault('Europe/Oslo')
 
@@ -94,7 +101,20 @@ const start = async () => {
   bot.on('ready', async () => {
     console.log("READY!")
     console.log('Logged in as %s', bot.user.tag)
-    bot.user.setActivity('paint dry', { type: 'WATCHING'})
+    bot.user.setActivity('paint dry', { type: 'WATCHING' })
+    app.use(cors('*'))
+    app.use(bodyparser.urlencoded({ extended: true }))
+    app.use(bodyparser.json())
+    app.post('/bot', (req, res) => {
+      console.log(req.body)
+      if (req.body.get === 'botstatus') {
+        return res.status(200).send(JSON.stringify(bot))
+      }
+      return res.status(200).send(JSON.stringify({ content: req.body }))
+    })
+    http.createServer(app).listen(4005, () => {
+      console.log("Bot API up and running on port 4005")
+    })
   })
 
   if (process.env.NODE_ENV !== 'production') {
