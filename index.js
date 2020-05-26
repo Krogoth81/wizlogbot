@@ -46,7 +46,7 @@ const directMsg = async (msg) => {
           return null
         }
         const { success, url, message } = response
-        if (success) msg.channel.send(`>>> ${message}\n${url}`)
+        if (success) msg.channel.send(`>>> ${message}\n<${url}>`)
         else msg.channel.send(`>>> ${message}`)
       } else {
         let randomLine = answers[Math.floor(Math.random() * answers.length)]
