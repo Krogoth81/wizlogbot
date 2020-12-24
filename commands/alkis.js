@@ -84,10 +84,10 @@ module.exports = async (msg, content, { CONFIG }) => {
   let onf = momOpenNext ? momOpenNext.format(dfDay) : 'N/A'
   let cnf = momCloseNext ? momCloseNext.format(dfDay) : 'N/A'
 
-  let otNow = momOpenToday.from(now)
-  let ctNow = momCloseToday.from(now)
-  let onNow = momOpenNext.from(now)
-  let cnNow = momCloseNext.from(now)
+  let otNow = momOpenToday ? momOpenToday.from(now) : 'N/A'
+  let ctNow = momCloseToday ? momCloseToday.from(now) : 'N/A'
+  let onNow = momOpenNext ? momOpenNext.from(now) : 'N/A'
+  let cnNow = momCloseNext ? momCloseNext.from(now) : 'N/A'
 
   let reply = `Polsalg - ${now.format(dfPlus)} - ${data.storeName}\n`
   reply += `Status: ${now.isAfter(momOpenToday) && now.isBefore(momCloseToday) ? '**Åpent**' : '**Stengt**'}\n`
