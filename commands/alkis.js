@@ -79,10 +79,10 @@ module.exports = async (msg, content, { CONFIG }) => {
   let momOpenNext = moment(`${next.format(df)} ${nextOpening}`, `${df} HH:mm`)
   let momCloseNext = moment(`${next.format(df)} ${nextClosing}`, `${df} HH:mm`)
 
-  let otf = momOpenToday.format(dfDay)
-  let ctf = momCloseToday.format(dfDay)
-  let onf = momOpenNext.format(dfDay)
-  let cnf = momCloseNext.format(dfDay)
+  let otf = momOpenToday ? momOpenToday.format(dfDay) : 'N/A'
+  let ctf = momCloseToday ? momCloseToday.format(dfDay) : 'N/A'
+  let onf = momOpenNext ? momOpenNext.format(dfDay) : 'N/A'
+  let cnf = momCloseNext ? momCloseNext.format(dfDay) : 'N/A'
 
   let otNow = momOpenToday.from(now)
   let ctNow = momCloseToday.from(now)
