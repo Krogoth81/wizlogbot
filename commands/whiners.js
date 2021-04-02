@@ -7,29 +7,39 @@ module.exports = async (msg, content, { bot, query }) => {
     msg.channel.send("> Fant ikke noen klager. Noe har gått galt.. Kroooog!")
     return null
   }
+  try {
+    const users = {}
+    const arr = Promise.all(
+      responses.map(({ messageid, channelid }) => (
+        new Promise(resolve => {
+          let channel = await bot.channels.fetch(channelid)
+          resolve(await channel.messages.fetch(messageid))
+        }
+        )))
+    )
 
-  const users = {}
-  for (let i = 0; i < response.length; i++) {
-    let item = response[i]
-    const { messageid, channelid } = item
-    let channel = await bot.channels.fetch(channelid)
-    const fetchMsg = await channel.messages.fetch(messageid)
-    const username = fetchMsg.author.username
-    if (!users[username]) users[username] = 1
-    else users[username]++
-  }
-
-  let arr = Object.keys(users).map(key => {
-    return {
-      username: key,
-      score: users[key]
+    for (let whineMessage of arr) {
+      const username = whineMessage.author.username
+      if (!users[username]) users[username] = 1
+      else users[username]++
     }
-  }).sort((o1, o2) => o2.score - o1.score)
 
-  let reply = '**Topp 10 Scoreboard - Klager**\n'
-  arr.forEach((wizard, i) => {
-    if (i < 10) reply += `#${i+1}: *${wizard.username}* - ${wizard.score}\n`
-  })
-  msg.channel.send(reply)
-  msg.channel.stopTyping()
+    let arr = Object.keys(users).map(key => {
+      return {
+        username: key,
+        score: users[key]
+      }
+    }).sort((o1, o2) => o2.score - o1.score)
+
+    let reply = '**Topp 10 Scoreboard - Klager**\n'
+    arr.forEach((wizard, i) => {
+      if (i < 10) reply += `#${i + 1}: *${wizard.username}* - ${wizard.score}\n`
+    })
+    msg.channel.send(reply)
+  } catch (e) {
+    console.log(e)
+    msg.channel.send(`Å nei! En feil oppsto! Krog?\n${e.message}`)
+  } finally {
+    msg.channel.stopTyping()
+  }
 }
