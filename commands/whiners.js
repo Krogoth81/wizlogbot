@@ -9,16 +9,16 @@ module.exports = async (msg, content, { bot, query }) => {
   }
   try {
     const users = {}
-    const arr = Promise.all(
+    const whines = Promise.all(
       responses.map(({ messageid, channelid }) => (
         new Promise(async resolve => {
           let channel = await bot.channels.fetch(channelid)
           resolve(await channel.messages.fetch(messageid))
         }
-        )))
+      )))
     )
 
-    for (let whineMessage of arr) {
+    for (let whineMessage of whines) {
       const username = whineMessage.author.username
       if (!users[username]) users[username] = 1
       else users[username]++
