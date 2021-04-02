@@ -7,27 +7,33 @@ module.exports = async (msg, content, { bot, query }) => {
     msg.channel.send("> Fant ikke noen klager. Noe har gått galt.. Kroooog!")
     return null
   }
+  const uniqueChannels = [...(new Set(response.map(o => o.channelid)))]
+  const channelArray = await Promise.all(uniqueChannels.map(o => (
+    new Promise(async resolve => {
+      const channel = await bot.channels.fetch(o)
+      resolve({ id: o, channel })
+    }
+  ))))
+  const channels = channelArray.reduce((acc, o) => ({ ...acc, [o.id]: o.channel }), {})
+  
   try {
-    const users = {}
-    console.log('Found', response.length, 'complains')
     const whines = await Promise.all(
-      response.map(({ messageid, channelid }) => {
-        console.log('checking', messageid, channelid)
-        return new Promise(async resolve => {
+      response.map(({ messageid, channelid }) => (
+        new Promise(async resolve => {
           let message = null
+          if (!channels[channelid]) return resolve(null)
           try { 
-            const channel = await bot.channels.fetch(channelid)
-            console.log('channel', channel)
+            const channel = channels[channelid]
             message = await channel.messages.fetch(messageid)
-            console.log('message? -> ', !!message)
           } catch (e) { 
-            console.log(e.message)
+            console.log(new Date(), 'Error"', e.message)
           }
           resolve(message)
         })
-      })
+      ))
     )
-
+      
+    const users = {}
     for (let whineMessage of whines) {
       if (!whineMessage) continue
       const username = whineMessage.author.username
