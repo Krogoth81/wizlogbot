@@ -11,7 +11,7 @@ module.exports = async (msg, content, { bot, query }) => {
     const users = {}
     const arr = Promise.all(
       responses.map(({ messageid, channelid }) => (
-        new Promise(resolve => {
+        new Promise(async resolve => {
           let channel = await bot.channels.fetch(channelid)
           resolve(await channel.messages.fetch(messageid))
         }
