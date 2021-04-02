@@ -24,8 +24,8 @@ module.exports = async (msg, content, { bot, query }) => {
             console.log(e.message)
           }
           resolve(message)
-        }
-      }))
+        })
+      })
     )
 
     for (let whineMessage of whines) {
