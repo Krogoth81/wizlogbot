@@ -9,7 +9,7 @@ module.exports = async (msg, content, { bot, query }) => {
   }
   try {
     const users = {}
-    const whines = Promise.all(
+    const whines = await Promise.all(
       response.map(({ messageid, channelid }) => (
         new Promise(async resolve => {
           let channel = await bot.channels.fetch(channelid)
