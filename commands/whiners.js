@@ -9,19 +9,23 @@ module.exports = async (msg, content, { bot, query }) => {
   }
   try {
     const users = {}
+    console.log('Found', response.length, 'complains')
     const whines = await Promise.all(
-      response.map(({ messageid, channelid }) => (
-        new Promise(async resolve => {
+      response.map(({ messageid, channelid }) => {
+        console.log('checking', messageid, channelid)
+        return new Promise(async resolve => {
           let message = null
           try { 
             const channel = await bot.channels.fetch(channelid)
+            console.log('channel', channel)
             message = await channel.messages.fetch(messageid)
+            console.log('message? -> ', !!message)
           } catch (e) { 
-            /* Error :( */ 
+            console.log(e.message)
           }
           resolve(message)
         }
-      )))
+      }))
     )
 
     for (let whineMessage of whines) {
