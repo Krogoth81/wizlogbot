@@ -10,8 +10,14 @@ module.exports = async (msg, content, { bot, query }) => {
   const uniqueChannels = [...(new Set(response.map(o => o.channelid)))]
   const channelArray = await Promise.all(uniqueChannels.map(o => (
     new Promise(async resolve => {
-      const channel = await bot.channels.fetch(o)
-      resolve({ id: o, channel })
+      try {
+        const channel = await bot.channels.fetch(o)
+        resolve({ id: o, channel })
+        return 
+      } catch (e) {
+        console.log(new Date(), e.message)
+        resolve({ id: o, channel: null })
+      }
     }
   ))))
   const channels = channelArray.reduce((acc, o) => ({ ...acc, [o.id]: o.channel }), {})
