@@ -1,6 +1,4 @@
-const { GraphQLClient } = require('graphql-request')
-
-const config = require('./config.json')
+import { GraphQLClient } from 'graphql-request'
 
 const devUrl = 'http://localhost:4000/graphql'
 const prodUrl = 'https://api.wizardry-logs.com/graphql'
@@ -123,13 +121,13 @@ const lastQuizQuery = `
   }
 `
 
-const init = (msg) => {
+const init = (msg, CONFIG) => {
   const discordid = msg.author.id
   const nick = msg.author.username
 
   const client = new GraphQLClient(clientUrl, {
     headers: {
-      botaccess: config.graphqlToken,
+      botaccess: CONFIG.GRAPHQLTOKEN,
       discordid,
       nick,
     },
@@ -137,71 +135,74 @@ const init = (msg) => {
 
   const search = async (channel, searchString) => {
     try {
-      let { searchInChannel } = await client.request(searchQuery, { channel, searchString, limit: 1})
+      const { searchInChannel } = await client.request(searchQuery, {
+        channel,
+        searchString,
+        limit: 1,
+      })
       return searchInChannel
     } catch (e) {
-      console.log(new Date(), "Errored during search query", e)
+      console.log(new Date(), 'Errored during search query', e)
       return null
     }
   }
 
   const randomComplaint = async () => {
     try {
-      let { getRandomComplaint } = await client.request(getRandomComplaintQuery)
+      const { getRandomComplaint } = await client.request(getRandomComplaintQuery)
       return getRandomComplaint
     } catch (e) {
-      console.log(new Date(), "Errored during random complaint query", e)
+      console.log(new Date(), 'Errored during random complaint query', e)
       return null
     }
   }
 
-
   const random = async () => {
     try {
-      let { findRandomMessage } = await client.request(randomQuery)
+      const { findRandomMessage } = await client.request(randomQuery)
       return findRandomMessage
     } catch (e) {
-      console.log(new Date(), "Errored during random query", e)
+      console.log(new Date(), 'Errored during random query', e)
       return null
     }
   }
 
   const authMe = async () => {
     try {
-      let { generateInviteForUser } = await client.request(generateInvite)
+      const { generateInviteForUser } = await client.request(generateInvite)
       return generateInviteForUser
     } catch (e) {
-      console.log(new Date(), "Errored during auth query", e)
+      console.log(new Date(), 'Errored during auth query', e)
       return null
     }
   }
 
   const getStatus = async () => {
     try {
-      let { generateStatusReport } = await client.request(statusReportQuery)
+      const { generateStatusReport } = await client.request(statusReportQuery)
       return generateStatusReport
     } catch (e) {
-      console.log(new Date(), "Errored during getStatus query", e)
+      console.log(new Date(), 'Errored during getStatus query', e)
       return null
     }
   }
 
   const addRequest = async (content) => {
     try {
-      let { addFeatureRequest } = await client.request(addRequestMutation, { content })
+      const { addFeatureRequest } = await client.request(addRequestMutation, { content })
       return addFeatureRequest
     } catch (e) {
-      console.log(new Date(), "Errored during addRequest mutation", e)
+      console.log(new Date(), 'Errored during addRequest mutation', e)
       return null
     }
   }
 
   const randomResponse = async (content) => {
     try {
-      let { randomResponse } = await client.request(getRandomString, { content })
+      const { randomResponse } = await client.request(getRandomString, { content })
       return randomResponse
     } catch (e) {
-      console.log(new Date(), "Errored during randomResponse mutation", e)
+      console.log(new Date(), 'Errored during randomResponse mutation', e)
       return null
     }
   }
@@ -210,40 +211,39 @@ const init = (msg) => {
     try {
       client.request(registerComplaintMutation, input)
     } catch (e) {
-      console.log(new Date(), "Errored during registerComplaint mutation", e)
+      console.log(new Date(), 'Errored during registerComplaint mutation', e)
       return null
     }
   }
-  const allComplaints = async (input) => {
+  const allComplaints = async () => {
     try {
-      let { allComplaints } = await client.request(allComplaintsQuery)
+      const { allComplaints } = await client.request(allComplaintsQuery)
       return allComplaints
     } catch (e) {
-      console.log(new Date(), "Errored during allComplaints query", e)
+      console.log(new Date(), 'Errored during allComplaints query', e)
       return null
     }
   }
 
   const createQuiz = async () => {
     try {
-      let { createQuiz } = await client.request(createQuizMutation)
+      const { createQuiz } = await client.request(createQuizMutation)
       return createQuiz
     } catch (e) {
-      console.log(new Date(), "Errored during createQuiz mutation", e)
+      console.log(new Date(), 'Errored during createQuiz mutation', e)
       return e.message
     }
   }
 
   const lastQuiz = async () => {
     try {
-      let { getLastQuiz } = await client.request(lastQuizQuery)
+      const { getLastQuiz } = await client.request(lastQuizQuery)
       return getLastQuiz
     } catch (e) {
-      console.log(new Date(), "Errored during createQuiz mutation", e)
+      console.log(new Date(), 'Errored during createQuiz mutation', e)
       return e.message
     }
   }
-
 
   return {
     search,
@@ -260,6 +260,6 @@ const init = (msg) => {
   }
 }
 
-module.exports = {
-  init
+export default {
+  init,
 }

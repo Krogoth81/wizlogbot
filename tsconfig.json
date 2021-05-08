@@ -1,0 +1,21 @@
+{
+    "compilerOptions": {
+        "target": "es6",
+        "module": "commonjs",
+        "allowJs": false,
+        "checkJs": false,
+        "esModuleInterop": true,
+        "baseUrl": "src",
+        "rootDir": "src",
+        "allowSyntheticDefaultImports": true,
+        "experimentalDecorators": true,
+        "inlineSourceMap": true,
+        "resolveJsonModule": true,
+        "outDir": "dist",
+        "moduleResolution": "node"
+    },
+    "exclude": [
+        "node_modules",
+        "dist"
+    ]
+}

@@ -1,20 +1,21 @@
-const klage = require('./klage')
+import klage from './klage'
+import drekkameir from './drekkameir'
 
 const events = [
   {
     name: 'klage',
-    trigger: require('./klage'),
+    trigger: klage,
     regex: /^!klage/i,
   },
   {
     name: 'drekkameir',
-    trigger: require('./drekkameir'),
+    trigger: drekkameir,
     regex: /(^|\s)drekka(\s|$)/i,
-  }
+  },
 ]
 
-module.exports = (msg, context) => {
-  events.forEach(e => {
+export default (msg, context) => {
+  events.forEach((e) => {
     if (msg.content.match(e.regex)) {
       e.trigger(msg, context)
     }
