@@ -23,8 +23,10 @@ export default async (msg, content, { bot, query }) => {
           })
       )
     )
-    const channels = channelArray.reduce((acc, o) => ({ ...acc, [o.id]: o.channel }), {})
-    const whines = await Promise.all(
+    const channels = channelArray.reduce((acc: object, o: any) => {
+      return ({ ...acc, [o.id]: o.channel })
+    }, {})
+    const whines: any[] = await Promise.all(
       response.map(
         ({ messageid, channelid }) =>
           new Promise(async (resolve) => {
