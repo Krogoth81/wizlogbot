@@ -2,8 +2,9 @@
 version: "2.2"
 services:
   bot:
+    network_mode: host
     build: .
     # volumes:
-    #   - .:/usr/src/app
+      #   - .:/usr/src/app
     env_file:
       - ./.env.prod
