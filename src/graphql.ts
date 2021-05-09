@@ -1,7 +1,7 @@
 import { GraphQLClient } from 'graphql-request'
 
-const devUrl = 'http://localhost:4000/graphql'
-const prodUrl = 'http://localhost:4000/graphql'
+const devUrl = 'http://localhost:4000'
+const prodUrl = 'http://localhost:4000'
 
 const clientUrl = process.env.NODE_ENV === 'production' ? prodUrl : devUrl
 
