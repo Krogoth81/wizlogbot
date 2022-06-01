@@ -1,6 +1,6 @@
 **/.classpath
 **/.dockerignore
-**/.env
+# **/.env
 **/.git
 **/.gitignore
 **/.project
@@ -21,4 +21,5 @@
 **/obj
 **/secrets.dev.yaml
 **/values.dev.yaml
+# dist
 README.md

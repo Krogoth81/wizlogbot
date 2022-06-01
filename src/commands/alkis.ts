@@ -1,8 +1,7 @@
-import moment from 'moment'
-import fetch from 'node-fetch'
-import _ from 'lodash'
+import dayjs from 'dayjs'
+import {MessageResolver} from '../types/types'
 
-export default async (msg, content, { CONFIG }) => {
+export const alcoholic: MessageResolver = async (msg, content, {config}) => {
   const name = content || 'Trondheim, Valentinlyst'
 
   let url = 'https://apis.vinmonopolet.no/stores/v0/details?storeNameContains='
@@ -10,7 +9,7 @@ export default async (msg, content, { CONFIG }) => {
 
   const res = await fetch(url, {
     headers: {
-      'Ocp-Apim-Subscription-Key': CONFIG.VINMONOPOLKEY,
+      'Ocp-Apim-Subscription-Key': config.vinmonopolKey,
     },
   })
   let list = null
@@ -18,17 +17,17 @@ export default async (msg, content, { CONFIG }) => {
     list = await res.json()
   } catch (e) {}
 
-  if (_.isEmpty(list)) {
+  if (list?.length <= 0) {
     msg.channel.send(`Fant ingen treff på ${content}`)
     return null
   }
 
   const data = list[0]
   const {
-    openingHours: { regularHours, exceptionHours },
+    openingHours: {regularHours, exceptionHours},
   } = data
 
-  const now = moment()
+  const now = dayjs()
 
   const dayIndex = now.day() - 1 < 0 ? 6 : now.day() - 1
 
@@ -54,7 +53,7 @@ export default async (msg, content, { CONFIG }) => {
     const nextDayIndex = next.day() - 1 < 0 ? 6 : next.day() - 1
     nextOpening = regularHours[nextDayIndex].openingTime
     nextClosing = regularHours[nextDayIndex].closingTime
-    if (!_.isEmpty(exceptionHours)) {
+    if (exceptionHours?.length > 0) {
       exceptionHours.forEach((eh) => {
         if (next.format('YYYY-MM-DD') === eh.date) {
           nextExceptionMessage.push(`[${eh.date}]: ${eh.message}`)
@@ -71,13 +70,13 @@ export default async (msg, content, { CONFIG }) => {
   const dfDay = 'dddd HH:mm'
 
   const momOpenToday = openingToday
-    ? moment(`${now.format(df)} ${openingToday}`, `${df} HH:mm`)
+    ? dayjs(`${now.format(df)} ${openingToday}`, `${df} HH:mm`)
     : null
   const momCloseToday = closingToday
-    ? moment(`${now.format(df)} ${closingToday}`, `${df} HH:mm`)
+    ? dayjs(`${now.format(df)} ${closingToday}`, `${df} HH:mm`)
     : null
-  const momOpenNext = moment(`${next.format(df)} ${nextOpening}`, `${df} HH:mm`)
-  const momCloseNext = moment(`${next.format(df)} ${nextClosing}`, `${df} HH:mm`)
+  const momOpenNext = dayjs(`${next.format(df)} ${nextOpening}`, `${df} HH:mm`)
+  const momCloseNext = dayjs(`${next.format(df)} ${nextClosing}`, `${df} HH:mm`)
 
   const otf = momOpenToday ? momOpenToday.format(dfDay) : 'N/A'
   const ctf = momCloseToday ? momCloseToday.format(dfDay) : 'N/A'
@@ -107,7 +106,7 @@ export default async (msg, content, { CONFIG }) => {
     reply += `Stenger ${ctNow} (${ctf})\n`
   } else if (now.isAfter(momOpenToday) && now.isAfter(momCloseToday)) {
     reply += `Stengte for ${ctNow} (${ctf})\n`
-    if (!_.isEmpty(nextExceptionMessage)) {
+    if (nextExceptionMessage?.length > 0) {
       nextExceptionMessage.forEach((nem) => {
         reply += `> ${nem}\n`
       })

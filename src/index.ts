@@ -1,153 +1,84 @@
-import express from 'express'
-import http from 'http'
-import Discord from 'discord.js'
-import moment from 'moment-timezone'
-import cors from 'cors'
-import bodyParser from 'body-parser'
-import _ from 'lodash'
-// import CONFIG from './config.json' // Not included - make your own!
-import query from './graphql'
+import dotenv from 'dotenv'
+dotenv.config()
+import Discord, {Intents} from 'discord.js'
+import * as config from './config'
+import './init'
 
-import events from './events/'
+const bot = new Discord.Client({
+  intents: [
+    Intents.FLAGS.GUILDS,
+    Intents.FLAGS.GUILD_MESSAGES,
+    Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
+    Intents.FLAGS.GUILD_EMOJIS_AND_STICKERS,
+    Intents.FLAGS.GUILD_MESSAGE_TYPING,
+  ],
+})
 
-import { TextChannel } from 'discord.js'
+import {commands} from './commands/'
+import {MessageContext} from './types/types'
 
-const { BOTTOKEN, GRAPHQLTOKEN, VINMONOPOLKEY, OWNERID } = process.env
-const CONFIG = { BOTTOKEN, GRAPHQLTOKEN, VINMONOPOLKEY, OWNERID }
-
-moment.locale('nb')
-moment.tz.setDefault('Europe/Oslo')
-const app = express()
-const bot = new Discord.Client()
-const bootTime = moment()
-
-const answers = [
-  'What do you want?',
-  "I don't understand!",
-  'Really now?',
-  '\\*whistles\\*',
-  'Exactly!',
-  'No way!?',
-  'Could you repeat that?',
-  "You're not making any sense",
-  "Wow. I can't believe you said that!",
-  "Haha! :laughing: That's hilarious!",
-  "Sorry, I'm busy grinding my gears.",
-]
-
-import commands from './commands/'
-
-const directMsg = async (msg, devMode) => {
-  try {
-    if (devMode) {
-      if (msg.content.match(/^_\!authme(\s|$)/)) {
-        const response = await query.init(msg, CONFIG).authMe()
-        if (!response) {
-          msg.channel.send('Got null response, server down?')
-          return null
-        }
-        const { success, url, message } = response
-        if (success) msg.channel.send(`>>> ${message}\n<${url}>`)
-        else msg.channel.send(`>>> ${message}`)
-      } else {
-        const randomLine = answers[Math.floor(Math.random() * answers.length)]
-        msg.channel.send(randomLine)
-      }
-    } else if (msg.content.match(/^\!authme(\s|$)/)) {
-      const response = await query.init(msg, CONFIG).authMe()
-      const { success, url, message } = response
-      if (success) msg.channel.send(`>>> ${message}\n${url}`)
-      else msg.channel.send(`>>> ${message}`)
-    } else {
-      const randomLine = answers[Math.floor(Math.random() * answers.length)]
-      msg.channel.send(randomLine)
-    }
-  } catch (e) {
-    console.log(e)
-  }
+enum RegexIndex {
+  COMMAND = 1,
+  CONTENT = 2,
 }
 
-const channelMsg = async (msg, devMode) => {
-  const context = {
+const channelMsg = async (msg: Discord.Message<boolean>) => {
+  const context: MessageContext = {
     bot,
-    bootTime,
-    CONFIG,
-    query: query.init(msg, CONFIG),
+    config,
     commands,
   }
 
-  if (!devMode) events(msg, context)
+  const commandRegex = new RegExp(
+    `^\!(${commands.map((cm) => cm.key).join('|')})(?:$|\\s)(.*)$`,
+    'i'
+  )
 
-  const COMMAND = 1
-  const CONTENT = 3
-
-  let commandRegex = new RegExp(`^\!(${Object.keys(commands).join('|')})($|\\s)(.*)$`, 'i')
-  if (devMode) {
-    commandRegex = new RegExp(`^_\!(${Object.keys(commands).join('|')})($|\\s)(.*)$`, 'i')
-  }
   const regexMatch = msg.content.match(commandRegex)
-  if (!regexMatch) return null
-  const key = regexMatch[COMMAND].toLowerCase()
-  const content = regexMatch[CONTENT]
 
-  if (key) commands[key](msg, content, context)
+  if (!regexMatch) {
+    return null
+  }
+
+  const key = regexMatch[RegexIndex.COMMAND].toLowerCase()
+  const content = regexMatch[RegexIndex.CONTENT]
+
+  const command = commands.find((cm) => key === cm.key)
+
+  if (command) {
+    command.run(msg, content, context)
+  }
 }
 
 const start = async () => {
   bot.on('ready', async () => {
     console.log('READY!')
     console.log('Logged in as %s', bot.user.tag)
-    bot.user.setActivity('paint dry', { type: 'WATCHING' })
-    app.use(cors())
-    app.use(bodyParser.urlencoded({ extended: true }))
-    app.use(bodyParser.json())
-    app.post('/bot', (req, res) => {
-      console.log(req.body)
-      if (req.body.get === 'botstatus') {
-        return res.status(200).send(JSON.stringify(bot))
-      }
-      return res.status(200).send(JSON.stringify({ content: req.body }))
-    })
-    http.createServer(app).listen(4005, () => {
-      console.log('Bot API up and running on port 4005')
-    })
+    bot.user.setActivity('paint dry', {type: 'WATCHING'})
   })
 
-  if (process.env.NODE_ENV !== 'production') {
-    bot.on('message', async (msg) => {
-      // ||========= TEST-STUFF GOES HERE ============||
-      if (msg.author.id !== CONFIG.OWNERID) return null
-      const { type } = msg.channel
-      if (msg.author.bot) return null
-      switch (type) {
-        case 'dm':
-          directMsg(msg, true)
-          break
-        case 'text':
-          if ((msg.channel as TextChannel).name !== 'bot-tester') return null
-          channelMsg(msg, true)
-        default:
-      }
-      return null
-      // ||===========================================||
-    })
-  } else {
-    bot.on('message', async (msg) => {
-      if (msg.author.bot) return null
-      const { type } = msg.channel
-      switch (type) {
-        case 'dm':
-          directMsg(msg, false)
-          break
-        case 'text':
-          channelMsg(msg, false)
-        default:
-      }
-      return null
-    })
-  }
+  bot.on('messageCreate', async (msg) => {
+    if (msg.author.bot) {
+      return
+    }
+    const {type} = msg.channel
+    switch (type) {
+      case 'GUILD_TEXT':
+        channelMsg(msg)
+      default:
+    }
+  })
 
-  bot.login(CONFIG.BOTTOKEN)
+  bot.on('messageUpdate', async (oldMsg, newMsg) => {
+    if (newMsg.author.bot) {
+      return
+    }
+    if (oldMsg.content.startsWith('!settopic') && newMsg.content.startsWith('!settopic')) {
+      commands.find((cm) => cm.key === 'settopic').run(newMsg as Discord.Message<boolean>)
+    }
+  })
+
+  bot.login(config.dicordClientToken)
   console.log('Connecting!')
 }
 

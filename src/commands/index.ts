@@ -1,27 +1,31 @@
-import { default as alkis } from './alkis'
-import { default as commands } from './commands'
-import { default as createquiz } from './createquiz'
-import { default as featurerequest } from './featurerequest'
-import { default as lastquiz } from './lastquiz'
-import { default as ping } from './ping'
-import { default as randomklage } from './randomklage'
-import { default as randomlog } from './randomlog'
-import { default as searchlogs } from './searchlogs'
-import { default as settopic } from './settopic'
-import { default as status } from './status'
-import { default as whiners } from './whiners'
+import {MessageResolver} from '../types/types'
+import {alcoholic} from './alkis'
+import {createQuiz} from './createQuiz'
+import {featureRequest} from './featureRequest'
+import {lastQuiz} from './lastQuiz'
+import {ping} from './ping'
+import {randomComplaint} from './randomComplaint'
+import {randomLog} from './randomLog'
+import {searchLogs} from './searchLogs'
+import {setTopic} from './setTopic'
+import {status} from './status'
+import {whiners} from './whiners'
 
-export default {
-  alkis,
-  commands,
-  createquiz,
-  featurerequest,
-  lastquiz,
-  ping,
-  randomklage,
-  randomlog,
-  searchlogs,
-  settopic,
-  status,
-  whiners,
+interface Command {
+  key: string
+  run: MessageResolver
 }
+
+export const commands: Array<Command> = [
+  {key: 'alkis', run: alcoholic},
+  {key: 'createquiz', run: createQuiz},
+  {key: 'featurerequest', run: featureRequest},
+  {key: 'lastquiz', run: lastQuiz},
+  {key: 'ping', run: ping},
+  {key: 'randomklage', run: randomComplaint},
+  {key: 'randomlog', run: randomLog},
+  {key: 'searchlogs', run: searchLogs},
+  {key: 'settopic', run: setTopic},
+  {key: 'status', run: status},
+  {key: 'whiners', run: whiners},
+]

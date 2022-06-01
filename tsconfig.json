@@ -1,21 +1,20 @@
 {
     "compilerOptions": {
-        "target": "es6",
+        "target": "ES2019",
         "module": "commonjs",
-        "allowJs": false,
-        "checkJs": false,
         "esModuleInterop": true,
-        "baseUrl": "src",
-        "rootDir": "src",
+        "baseUrl": ".",
+        "rootDir": ".",
         "allowSyntheticDefaultImports": true,
         "experimentalDecorators": true,
         "inlineSourceMap": true,
         "resolveJsonModule": true,
+        "skipLibCheck": true,
         "outDir": "dist",
-        "moduleResolution": "node"
     },
     "exclude": [
         "node_modules",
+        "deprecated",
         "dist"
     ]
 }

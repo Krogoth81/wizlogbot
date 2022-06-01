@@ -1,23 +1,27 @@
-import klage from './klage'
-import drekkameir from './drekkameir'
+import {MessageResolver} from '../types/types'
+import {complaint} from './complaint'
+import {drinkmore} from './drinkmore'
 
-const events = [
+interface TextEvent {
+  key: string
+  run: MessageResolver
+  regex: RegExp
+}
+
+const eventsList: Array<TextEvent> = [
   {
-    name: 'klage',
-    trigger: klage,
+    key: 'klage',
+    run: complaint,
     regex: /^!klage/i,
   },
   {
-    name: 'drekkameir',
-    trigger: drekkameir,
+    key: 'drekkameir',
+    run: drinkmore,
     regex: /(^|\s)drekka(\s|$)/i,
   },
 ]
 
-export default (msg, context) => {
-  events.forEach((e) => {
-    if (msg.content.match(e.regex)) {
-      e.trigger(msg, context)
-    }
-  })
+export const events: MessageResolver = async (msg, content, context) => {
+  const event = eventsList.find((ev) => msg.content.match(ev.regex))
+  event?.run(msg, content, context)
 }
