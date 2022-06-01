@@ -21,6 +21,18 @@ enum RegexIndex {
   COMMAND = 1,
   CONTENT = 2,
 }
+const commandRegex = new RegExp(`^\!(${commands.map((cm) => cm.key).join('|')})(?:$|\\s)(.*)$`, 'i')
+
+const getMessageValues = (msg: Discord.Message<boolean>) => {
+  const regexMatch = msg.content.match(commandRegex)
+  if (!regexMatch) {
+    return null
+  }
+  return {
+    command: regexMatch[RegexIndex.COMMAND].toLowerCase(),
+    content: regexMatch[RegexIndex.CONTENT],
+  }
+}
 
 const channelMsg = async (msg: Discord.Message<boolean>) => {
   const context: MessageContext = {
@@ -29,24 +41,15 @@ const channelMsg = async (msg: Discord.Message<boolean>) => {
     commands,
   }
 
-  const commandRegex = new RegExp(
-    `^\!(${commands.map((cm) => cm.key).join('|')})(?:$|\\s)(.*)$`,
-    'i'
-  )
-
-  const regexMatch = msg.content.match(commandRegex)
-
-  if (!regexMatch) {
-    return null
+  const values = getMessageValues(msg)
+  if (!values) {
+    return
   }
 
-  const key = regexMatch[RegexIndex.COMMAND].toLowerCase()
-  const content = regexMatch[RegexIndex.CONTENT]
-
-  const command = commands.find((cm) => key === cm.key)
+  const command = commands.find((cm) => values.command === cm.key)
 
   if (command) {
-    command.run(msg, content, context)
+    await command.run(msg, values.content, context)
   }
 }
 
@@ -74,7 +77,12 @@ const start = async () => {
       return
     }
     if (oldMsg.content.startsWith('!settopic') && newMsg.content.startsWith('!settopic')) {
-      commands.find((cm) => cm.key === 'settopic').run(newMsg as Discord.Message<boolean>)
+      const values = getMessageValues(newMsg as Discord.Message<boolean>)
+      const command = commands.find((cm) => cm.key === values.command)
+      if (!command) {
+        return
+      }
+      await command.run(newMsg as Discord.Message<boolean>, values.content)
     }
   })
 

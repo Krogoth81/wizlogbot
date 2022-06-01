@@ -1,18 +1,18 @@
-**/.classpath
+# **/.classpath
 **/.dockerignore
 # **/.env
 **/.git
 **/.gitignore
-**/.project
-**/.settings
-**/.toolstarget
+# **/.project
+# **/.settings
+# **/.toolstarget
 **/.vs
 **/.vscode
-**/*.*proj.user
-**/*.dbmdl
-**/*.jfm
-**/azds.yaml
-**/charts
+# **/*.*proj.user
+# **/*.dbmdl
+# **/*.jfm
+# **/azds.yaml
+# **/charts
 **/docker-compose*
 **/compose*
 **/Dockerfile*
