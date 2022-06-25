@@ -86,7 +86,12 @@ const start = async () => {
     }
   })
 
+  bot.on('error', (error) => {
+    console.error(new Date(), error)
+  })
+
   bot.login(config.dicordClientToken)
+
   console.log('Connecting!')
 }
 

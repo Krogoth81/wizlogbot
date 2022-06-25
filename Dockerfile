@@ -6,6 +6,8 @@ COPY --chown=node:node . .
 RUN yarn --production=false
 RUN yarn build
 
-COPY --chown=node:node . .
+COPY --chown=node:node dist /app
 
-CMD ["node", "dist/src/index.js"]
+COPY --chown=node:node .env /app/
+
+CMD ["node", "src/index.js"]
