@@ -85,7 +85,7 @@ export const weather: MessageResolver = async (msg, content) => {
 
     const response = `
       >>> 
-      **${actualName}**
+      **${actualName}**  -  (${lat}, ${lon})
       (${dayjs(date).format('DD.MM.YYYY - HH:mm')})
 
       Lufttemperatur: ${getValue('air_temperature')}
