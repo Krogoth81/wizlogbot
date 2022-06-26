@@ -70,6 +70,8 @@ export const weather: MessageResolver = async (msg, content) => {
     const place = locationJson.navn[searchIndex]
     actualName = place.stedsnavn[0].skrivemåte
     const geometry = place.geojson.geometry
+    const county = place.fylker[0].fylkesnavn
+
     const coordinates = geometry.coordinates
     let lat: number
     let lon: number
@@ -104,7 +106,7 @@ export const weather: MessageResolver = async (msg, content) => {
 
     const response = `
       >>> 
-      **${actualName}**  -  (${lat}, ${lon})
+      **${actualName}**  -  (${county})
       (${dayjs(date).format('DD.MM.YYYY - HH:mm')})
 
       Lufttemperatur: ${getValue('air_temperature')}
