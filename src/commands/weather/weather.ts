@@ -32,25 +32,44 @@ const getDirectionSymbol = (value: number) => {
   return 'Ukjent'
 }
 
+const getFooter = ({search, numberOfHits, searchIndex}) => {
+  if (numberOfHits <= 1) {
+    return ''
+  }
+  return `
+    _Fikk ${numberOfHits} treff på søk mot stedsnavn. Viser nr **${searchIndex + 1}**._
+    _For å se andre treff, skriv \`!weather ${search} <NUMMER>\`, der <NUMMER> er et tall fra 1 til ${numberOfHits}._
+  `
+}
+
 export const weather: MessageResolver = async (msg, content) => {
   const baseMetUrl = new URL('https://api.met.no/weatherapi/locationforecast/2.0/complete')
   const metParams = new URLSearchParams()
-
   let actualName: string
+
+  const [search, index] = content.split(' ')
 
   const locationBaseUrl = new URL('https://ws.geonorge.no/stedsnavn/v1/sted')
   const locationParams = new URLSearchParams()
-  locationParams.append('sok', content)
+  locationParams.append('sok', search)
   locationParams.append('fuzzy', 'true')
-  locationParams.append('treffPerSide', '1')
+  locationParams.append('treffPerSide', '5')
   locationParams.append('side', '1')
   const locationUrl = `${locationBaseUrl}?${locationParams.toString()}`
 
   try {
+    let searchIndex = index ? Math.max(parseInt(index) - 1, 0) : 0
     const locationRes = await fetch(locationUrl)
     const locationJson = await locationRes.json()
-    actualName = locationJson.navn[0].stedsnavn[0].skrivemåte
-    const geometry = locationJson.navn[0].geojson.geometry
+    const numberOfHits = locationJson.navn.length
+
+    if (searchIndex > numberOfHits) {
+      searchIndex = 0
+    }
+
+    const place = locationJson.navn[searchIndex]
+    actualName = place.stedsnavn[0].skrivemåte
+    const geometry = place.geojson.geometry
     const coordinates = geometry.coordinates
     let lat: number
     let lon: number
@@ -94,6 +113,8 @@ export const weather: MessageResolver = async (msg, content) => {
       Vind fra: ${getValue('wind_from_direction')}
       Vindhastighet: ${getValue('wind_speed')}
       Vindhastighet på kast: ${getValue('wind_speed_of_gust')}
+
+      ${getFooter({search, numberOfHits, searchIndex})}
     `
     msg.channel.send(response)
     return
