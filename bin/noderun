@@ -1,0 +1,8 @@
+#!/bin/sh
+set -e
+
+if [ "$NODE_ENV" = "production" ]; then
+  node $@
+else
+  node -r ts-node/register/transpile-only -r tsconfig-paths/register $@
+fi

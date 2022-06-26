@@ -1,5 +1,5 @@
 import {TextChannel} from 'discord.js'
-import {MessageResolver} from '../types/types'
+import {MessageResolver} from '..'
 
 export const setTopic: MessageResolver = async (msg, content) => {
   try {

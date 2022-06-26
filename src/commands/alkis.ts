@@ -1,5 +1,5 @@
 import dayjs from 'dayjs'
-import {MessageResolver} from '../types/types'
+import {MessageResolver} from '..'
 
 export const alcoholic: MessageResolver = async (msg, content, {config}) => {
   const name = content || 'Trondheim, Valentinlyst'

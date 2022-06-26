@@ -1,8 +1,21 @@
 import dotenv from 'dotenv'
 dotenv.config()
-import Discord, {Intents} from 'discord.js'
+import Discord, {Message, Intents} from 'discord.js'
 import * as config from './config'
 import './init'
+import {commands} from './commands/'
+
+export interface MessageContext {
+  bot: Discord.Client<boolean>
+  config: typeof config
+  commands: typeof commands
+}
+
+export type MessageResolver = (
+  msg: Message<boolean>,
+  content?: string,
+  context?: MessageContext
+) => Promise<void>
 
 const bot = new Discord.Client({
   intents: [
@@ -13,9 +26,6 @@ const bot = new Discord.Client({
     Intents.FLAGS.GUILD_MESSAGE_TYPING,
   ],
 })
-
-import {commands} from './commands/'
-import {MessageContext} from './types/types'
 
 enum RegexIndex {
   COMMAND = 1,
@@ -57,7 +67,6 @@ const start = async () => {
   bot.on('ready', async () => {
     console.log('READY!')
     console.log('Logged in as %s', bot.user.tag)
-    bot.user.setActivity('paint dry', {type: 'WATCHING'})
   })
 
   bot.on('messageCreate', async (msg) => {
@@ -66,8 +75,16 @@ const start = async () => {
     }
     const {type} = msg.channel
     switch (type) {
-      case 'GUILD_TEXT':
-        channelMsg(msg)
+      case 'GUILD_TEXT': {
+        if (!config.isProd) {
+          console.log('CHANNEL NAME ->', msg.channel.name)
+          if (msg.channel.name === 'bot-tester') {
+            channelMsg(msg)
+          }
+        } else {
+          channelMsg(msg)
+        }
+      }
       default:
     }
   })
@@ -77,6 +94,9 @@ const start = async () => {
       return
     }
     if (oldMsg.content.startsWith('!settopic') && newMsg.content.startsWith('!settopic')) {
+      if (!config.isProd) {
+        return
+      }
       const values = getMessageValues(newMsg as Discord.Message<boolean>)
       const command = commands.find((cm) => cm.key === values.command)
       if (!command) {

@@ -4,13 +4,16 @@
         "module": "commonjs",
         "esModuleInterop": true,
         "baseUrl": ".",
-        "rootDir": ".",
+        "rootDir": "src",
         "allowSyntheticDefaultImports": true,
         "experimentalDecorators": true,
         "inlineSourceMap": true,
         "resolveJsonModule": true,
         "skipLibCheck": true,
         "outDir": "dist",
+        "paths": {
+          "api/*": ["src"]
+        }
     },
     "exclude": [
         "node_modules",

@@ -1,4 +1,4 @@
-import {MessageResolver} from '../types/types'
+import {MessageResolver} from '..'
 import {alcoholic} from './alkis'
 import {createQuiz} from './createQuiz'
 import {featureRequest} from './featureRequest'
@@ -10,6 +10,7 @@ import {searchLogs} from './searchLogs'
 import {setTopic} from './setTopic'
 import {status} from './status'
 import {whiners} from './whiners'
+import {weather} from './weather'
 
 interface Command {
   key: string
@@ -28,4 +29,5 @@ export const commands: Array<Command> = [
   {key: 'settopic', run: setTopic},
   {key: 'status', run: status},
   {key: 'whiners', run: whiners},
+  {key: 'weather', run: weather},
 ]
