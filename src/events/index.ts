@@ -1,4 +1,4 @@
-import {MessageResolver} from '../types/types'
+import {MessageResolver} from '..'
 import {complaint} from './complaint'
 import {drinkmore} from './drinkmore'
 
