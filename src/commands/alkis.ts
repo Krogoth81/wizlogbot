@@ -34,7 +34,7 @@ export const alcoholic: MessageResolver = async (msg, content, {config}) => {
     openingHours: {regularHours, exceptionHours},
   } = data
 
-  const now = dayjs()
+  const now = dayjs().tz()
 
   const dayIndex = now.day() - 1 < 0 ? 6 : now.day() - 1
 
@@ -77,13 +77,13 @@ export const alcoholic: MessageResolver = async (msg, content, {config}) => {
   const dfDay = 'dddd HH:mm'
 
   const momOpenToday = openingToday
-    ? dayjs(`${now.format(df)} ${openingToday}`, `${df} HH:mm`)
+    ? dayjs(`${now.format(df)} ${openingToday}`, `${df} HH:mm`).tz()
     : null
   const momCloseToday = closingToday
-    ? dayjs(`${now.format(df)} ${closingToday}`, `${df} HH:mm`)
+    ? dayjs(`${now.format(df)} ${closingToday}`, `${df} HH:mm`).tz()
     : null
-  const momOpenNext = dayjs(`${next.format(df)} ${nextOpening}`, `${df} HH:mm`)
-  const momCloseNext = dayjs(`${next.format(df)} ${nextClosing}`, `${df} HH:mm`)
+  const momOpenNext = dayjs(`${next.format(df)} ${nextOpening}`, `${df} HH:mm`).tz()
+  const momCloseNext = dayjs(`${next.format(df)} ${nextClosing}`, `${df} HH:mm`).tz()
 
   const otf = momOpenToday ? momOpenToday.format(dfDay) : 'N/A'
   const ctf = momCloseToday ? momCloseToday.format(dfDay) : 'N/A'
