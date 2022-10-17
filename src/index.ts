@@ -1,7 +1,7 @@
 import dotenv from 'dotenv'
 dotenv.config()
 import Discord, {Message, Intents} from 'discord.js'
-import * as config from './config'
+import {config} from './config'
 import './init'
 import {commands} from './commands/'
 

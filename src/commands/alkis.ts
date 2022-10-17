@@ -23,6 +23,11 @@ export const alcoholic: MessageResolver = async (msg, content, {config}) => {
   }
 
   const data = list[0]
+  if (!data.openingHours) {
+    console.log(data)
+    msg.channel.send('Ute til lunch!')
+    return
+  }
   const {
     openingHours: {regularHours, exceptionHours},
   } = data

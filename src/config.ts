@@ -1,4 +1,6 @@
-export const dicordClientToken = process.env.BOTTOKEN
-export const vinmonopolKey = process.env.VINMONOPOLKEY
-export const ownerId = process.env.OWNERID
-export const isProd = process.env.NODE_ENV === 'production'
+export const config = {
+  dicordClientToken: process.env.BOTTOKEN,
+  vinmonopolKey: process.env.VINMONOPOLKEY,
+  ownerId: process.env.OWNERID,
+  isProd: process.env.NODE_ENV === 'production',
+}
