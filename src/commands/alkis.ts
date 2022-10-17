@@ -76,14 +76,16 @@ export const alcoholic: MessageResolver = async (msg, content, {config}) => {
   const dfPlus = 'YYYY-MM-DD HH:mm'
   const dfDay = 'dddd HH:mm'
 
+  console.log(openingToday, closingToday)
+
   const momOpenToday = openingToday
-    ? dayjs(`${now.format(df)} ${openingToday}`, `${df} HH:mm`).tz('Europe/Berlin')
+    ? dayjs(`${now.format(df)} ${openingToday}`, `${df} HH:mm`)
     : null
   const momCloseToday = closingToday
-    ? dayjs(`${now.format(df)} ${closingToday}`, `${df} HH:mm`).tz('Europe/Berlin')
+    ? dayjs(`${now.format(df)} ${closingToday}`, `${df} HH:mm`)
     : null
-  const momOpenNext = dayjs(`${next.format(df)} ${nextOpening}`, `${df} HH:mm`).tz('Europe/Berlin')
-  const momCloseNext = dayjs(`${next.format(df)} ${nextClosing}`, `${df} HH:mm`).tz('Europe/Berlin')
+  const momOpenNext = dayjs(`${next.format(df)} ${nextOpening}`, `${df} HH:mm`)
+  const momCloseNext = dayjs(`${next.format(df)} ${nextClosing}`, `${df} HH:mm`)
 
   const otf = momOpenToday ? momOpenToday.format(dfDay) : 'N/A'
   const ctf = momCloseToday ? momCloseToday.format(dfDay) : 'N/A'
