@@ -7,11 +7,12 @@ import {commands} from './commands/'
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import timezone from 'dayjs/plugin/timezone'
+import 'dayjs/locale/nb'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
-dayjs.tz.setDefault('Norway/Oslo')
-dayjs.locale('no')
+dayjs.tz.setDefault('Europe/Berlin')
+dayjs.locale('nb')
 
 export interface MessageContext {
   bot: Discord.Client<boolean>
