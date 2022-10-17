@@ -15,7 +15,9 @@ export const alcoholic: MessageResolver = async (msg, content, {config}) => {
   let list = null
   try {
     list = await res.json()
-  } catch (e) {}
+  } catch (e) {
+    console.log(e)
+  }
 
   if (list?.length <= 0) {
     msg.channel.send(`Fant ingen treff på ${content}`)
@@ -23,7 +25,7 @@ export const alcoholic: MessageResolver = async (msg, content, {config}) => {
   }
 
   const data = list[0]
-  if (!data.openingHours) {
+  if (!data?.openingHours) {
     console.log(data)
     msg.channel.send('Ute til lunch!')
     return
