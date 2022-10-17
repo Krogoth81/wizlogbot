@@ -11,6 +11,7 @@ import timezone from 'dayjs/plugin/timezone'
 dayjs.extend(utc)
 dayjs.extend(timezone)
 dayjs.tz.setDefault('Norway/Oslo')
+dayjs.locale('no_nb')
 
 export interface MessageContext {
   bot: Discord.Client<boolean>
