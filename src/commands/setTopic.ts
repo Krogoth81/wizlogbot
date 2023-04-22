@@ -1,9 +1,9 @@
-import {TextChannel} from 'discord.js'
-import {MessageResolver} from '..'
+import { ChannelType, TextChannel } from 'discord.js'
+import { MessageResolver } from '..'
 
 export const setTopic: MessageResolver = async (msg, content) => {
   try {
-    if (msg.channel.isText) {
+    if (msg.channel.type === ChannelType.GuildText) {
       const channel = msg.channel as TextChannel
       channel
         .setTopic(content)
@@ -22,12 +22,10 @@ export const setTopic: MessageResolver = async (msg, content) => {
       })
 
       if (rateLimited) {
-        msg.reply(
-          `HALP! I'm being rate limited. The topic change will happen, it might just take a few minutes!`
-        )
+        msg.reply(`HALP! I'm being rate limited. The topic change will happen, it might just take a few minutes!`)
       }
     }
-  } catch (e) {
+  } catch {
     console.error('Unable to set topic!')
   }
 }

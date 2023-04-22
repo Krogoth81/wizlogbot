@@ -1,0 +1,64 @@
+{
+  "javascript": {
+    "formatter": {
+      "quoteStyle": "single",
+      "semicolons": "asNeeded"
+    }
+  },
+  "formatter": {
+    "enabled": true,
+    "indentStyle": "space",
+    "indentSize": 2,
+    "lineWidth": 120,
+    "ignore": ["dist/", "__generated__/*", "*.d.ts"]
+  },
+  "linter": {
+    "enabled": true,
+    "ignore": ["dist/", "__generated__/*", "*.d.ts"],
+    "rules": {
+      "recommended": true,
+      "complexity": {
+        "recommended": true,
+        "useSimplifiedLogicExpression": "warn"
+      },
+      "a11y": {
+        "recommended": true,
+        "useKeyWithMouseEvents": "off",
+        "useKeyWithClickEvents": "off",
+        "noAutofocus": "off",
+        "useValidAnchor": "off"
+      },
+      "security": {
+        "noDangerouslySetInnerHtml": "off"
+      },
+      "performance": {
+        "noDelete": "off"
+      },
+      "correctness": {
+        "recommended": true,
+        "noRenderReturnValue": "off",
+        "noChildrenProp": "off",
+        "noConstAssign": "error",
+        "noUnreachable": "warn",
+        "noUnusedVariables": "warn"
+      },
+      "nursery": {
+        "useExhaustiveDependencies": "off",
+        "noInvalidConstructorSuper": "off",
+        "recommended": true
+      },
+      "suspicious": {
+        "noExplicitAny": "off",
+        "noArrayIndexKey": "off",
+        "noShadowRestrictedNames": "warn",
+        "noDoubleEquals": "error"
+      },
+      "style": {
+        "recommended": true,
+        "useBlockStatements": "warn",
+        "noImplicitBoolean": "off",
+        "useShorthandArrayType": "off"
+      }
+    }
+  }
+}

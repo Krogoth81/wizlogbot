@@ -1,9 +1,9 @@
 import dotenv from 'dotenv'
 dotenv.config()
-import Discord, {Message, Intents} from 'discord.js'
-import {config} from './config'
+import Discord, { Message, GatewayIntentBits } from 'discord.js'
+import { config } from './config'
 import './init'
-import {commands} from './commands/'
+import { commands } from './commands/'
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import timezone from 'dayjs/plugin/timezone'
@@ -21,19 +21,15 @@ export interface MessageContext {
   commands: typeof commands
 }
 
-export type MessageResolver = (
-  msg: Message<boolean>,
-  content?: string,
-  context?: MessageContext
-) => Promise<void>
+export type MessageResolver = (msg: Message<boolean>, content?: string, context?: MessageContext) => Promise<void>
 
 const bot = new Discord.Client({
   intents: [
-    Intents.FLAGS.GUILDS,
-    Intents.FLAGS.GUILD_MESSAGES,
-    Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
-    Intents.FLAGS.GUILD_EMOJIS_AND_STICKERS,
-    Intents.FLAGS.GUILD_MESSAGE_TYPING,
+    GatewayIntentBits.Guilds,
+    GatewayIntentBits.GuildMessages,
+    GatewayIntentBits.GuildMessageReactions,
+    GatewayIntentBits.GuildEmojisAndStickers,
+    GatewayIntentBits.GuildMessageTyping,
   ],
 })
 
@@ -85,9 +81,9 @@ const start = async () => {
     if (msg.author.bot) {
       return
     }
-    const {type} = msg.channel
+    const { type } = msg.channel
     switch (type) {
-      case 'GUILD_TEXT': {
+      case Discord.ChannelType.GuildText: {
         if (!config.isProd) {
           console.log('CHANNEL NAME ->', msg.channel.name)
           if (msg.channel.name === 'bot-tester') {

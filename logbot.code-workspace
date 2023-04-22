@@ -9,24 +9,24 @@
             "source.fixAll": true,
         },
         "[typescriptreact]": {
-            "editor.defaultFormatter": "esbenp.prettier-vscode",
-            "editor.formatOnSave": false
+            "editor.defaultFormatter": "rome.rome",
+            "editor.formatOnSave": true
         },
         "[typescript]": {
-            "editor.defaultFormatter": "esbenp.prettier-vscode",
-            "editor.formatOnSave": false
+            "editor.defaultFormatter": "rome.rome",
+            "editor.formatOnSave": true
         },
         "[javascript]": {
-            "editor.defaultFormatter": "esbenp.prettier-vscode",
-            "editor.formatOnSave": false
+            "editor.defaultFormatter": "rome.rome",
+            "editor.formatOnSave": true
         },
-        "search.followSymlinks": false,
+        "search.followSymlinks": true,
     },
     "extensions": {
         "recommendations": [
-            "dbaeumer.vscode-eslint",
             "graphql.vscode-graphql",
-            "esbenp.prettier-vscode"
+            "EditorConfig.EditorConfig",
+            "rome.rome"
         ]
     }
 }

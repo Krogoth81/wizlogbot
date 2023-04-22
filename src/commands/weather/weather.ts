@@ -1,6 +1,6 @@
-import {MessageResolver} from 'api/'
+import { MessageResolver } from 'api/'
 import dayjs from 'dayjs'
-import {ForecastTimeInstant, METJSONForecast} from './__generated__/locationforecast-2.0'
+import { ForecastTimeInstant, METJSONForecast } from './__generated__/locationforecast-2.0'
 
 const baseRadii = 11.25
 
@@ -32,7 +32,7 @@ const getDirectionSymbol = (value: number) => {
   return 'Ukjent'
 }
 
-const getFooter = ({search, numberOfHits, searchIndex}) => {
+const getFooter = ({ search, numberOfHits, searchIndex }) => {
   if (numberOfHits <= 1) {
     return ''
   }
@@ -116,7 +116,7 @@ export const weather: MessageResolver = async (msg, content) => {
       Vindhastighet: ${getValue('wind_speed')}
       Vindhastighet på kast: ${getValue('wind_speed_of_gust')}
 
-      ${getFooter({search, numberOfHits, searchIndex})}
+      ${getFooter({ search, numberOfHits, searchIndex })}
     `
     msg.channel.send(response)
     return

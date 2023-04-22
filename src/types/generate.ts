@@ -1,16 +1,16 @@
-import {camelCase} from 'change-case'
-import {writeFileSync} from 'fs'
+import { camelCase } from 'change-case'
+import { writeFileSync } from 'fs'
 import path from 'path'
-import {generateApi} from 'swagger-typescript-api'
+import { generateApi } from 'swagger-typescript-api'
 
 // const swaggerBase = `https://api.met.no/weatherapi`
-const swaggerBase = `https://ws.geonorge.no`
+const swaggerBase = 'https://ws.geonorge.no'
 
 const swaggers = ['stedsnavn/v1/sted']
 
 export const generateTypes = async () => {
-  let imports = ``
-  let exports = ``
+  let imports = ''
+  let exports = ''
   const folder = `${path.resolve(__dirname, './__generated__')}`
 
   for (const swagger of swaggers) {

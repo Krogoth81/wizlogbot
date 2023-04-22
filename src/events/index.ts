@@ -1,6 +1,6 @@
-import {MessageResolver} from '..'
-import {complaint} from './complaint'
-import {drinkmore} from './drinkmore'
+import { MessageResolver } from '..'
+import { complaint } from './complaint'
+import { drinkmore } from './drinkmore'
 
 interface TextEvent {
   key: string

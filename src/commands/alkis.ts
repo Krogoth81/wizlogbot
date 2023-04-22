@@ -1,7 +1,7 @@
 import dayjs from 'dayjs'
-import {MessageResolver} from '..'
+import { MessageResolver } from '..'
 
-export const alcoholic: MessageResolver = async (msg, content, {config}) => {
+export const alcoholic: MessageResolver = async (msg, content, { config }) => {
   const name = content || 'Trondheim, Valentinlyst'
 
   let url = 'https://apis.vinmonopolet.no/stores/v0/details?storeNameContains='
@@ -15,7 +15,7 @@ export const alcoholic: MessageResolver = async (msg, content, {config}) => {
   let list = null
   try {
     list = await res.json()
-  } catch (e) {}
+  } catch {}
 
   if (list?.length <= 0) {
     msg.channel.send(`Fant ingen treff på ${content}`)
@@ -24,7 +24,7 @@ export const alcoholic: MessageResolver = async (msg, content, {config}) => {
 
   const data = list[0]
   const {
-    openingHours: {regularHours, exceptionHours},
+    openingHours: { regularHours, exceptionHours },
   } = data
 
   const now = dayjs()
@@ -69,12 +69,8 @@ export const alcoholic: MessageResolver = async (msg, content, {config}) => {
   const dfPlus = 'YYYY-MM-DD HH:mm'
   const dfDay = 'dddd HH:mm'
 
-  const momOpenToday = openingToday
-    ? dayjs(`${now.format(df)} ${openingToday}`, `${df} HH:mm`)
-    : null
-  const momCloseToday = closingToday
-    ? dayjs(`${now.format(df)} ${closingToday}`, `${df} HH:mm`)
-    : null
+  const momOpenToday = openingToday ? dayjs(`${now.format(df)} ${openingToday}`, `${df} HH:mm`) : null
+  const momCloseToday = closingToday ? dayjs(`${now.format(df)} ${closingToday}`, `${df} HH:mm`) : null
   const momOpenNext = dayjs(`${next.format(df)} ${nextOpening}`, `${df} HH:mm`)
   const momCloseNext = dayjs(`${next.format(df)} ${nextClosing}`, `${df} HH:mm`)
 
@@ -89,13 +85,11 @@ export const alcoholic: MessageResolver = async (msg, content, {config}) => {
   const cnNow = momCloseNext ? momCloseNext.from(now) : 'N/A'
 
   let reply = `Polsalg - ${now.format(dfPlus)} - ${data.storeName}\n`
-  reply += `Status: ${
-    now.isAfter(momOpenToday) && now.isBefore(momCloseToday) ? '**Åpent**' : '**Stengt**'
-  }\n`
+  reply += `Status: ${now.isAfter(momOpenToday) && now.isBefore(momCloseToday) ? '**Åpent**' : '**Stengt**'}\n`
   todayExceptionMessage.forEach((em) => {
     reply += `> ${em}\n`
   })
-  if (!momOpenToday || !momCloseToday) {
+  if (!(momOpenToday && momCloseToday)) {
     reply += 'Stengt i dag.\n'
     reply += `Neste åpning: ${onNow} (${momOpenNext})\n`
   } else if (now.isBefore(momOpenToday)) {
