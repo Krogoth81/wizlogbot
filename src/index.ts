@@ -8,6 +8,7 @@ import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import timezone from 'dayjs/plugin/timezone'
 import 'dayjs/locale/nb'
+import { events } from './events'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -59,6 +60,8 @@ const channelMsg = async (msg: Discord.Message<boolean>) => {
     config,
     commands,
   }
+
+  events(msg, undefined, context)
 
   const values = getMessageValues(msg)
   if (!values) {

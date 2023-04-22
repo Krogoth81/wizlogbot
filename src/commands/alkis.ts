@@ -15,9 +15,7 @@ export const alcoholic: MessageResolver = async (msg, content, {config}) => {
   let list = null
   try {
     list = await res.json()
-  } catch (e) {
-    console.log(e)
-  }
+  } catch (e) {}
 
   if (list?.length <= 0) {
     msg.channel.send(`Fant ingen treff på ${content}`)
@@ -25,16 +23,11 @@ export const alcoholic: MessageResolver = async (msg, content, {config}) => {
   }
 
   const data = list[0]
-  if (!data?.openingHours) {
-    console.log(data)
-    msg.channel.send('Ute til lunch!')
-    return
-  }
   const {
     openingHours: {regularHours, exceptionHours},
   } = data
 
-  const now = dayjs().tz('Europe/Berlin')
+  const now = dayjs()
 
   const dayIndex = now.day() - 1 < 0 ? 6 : now.day() - 1
 
@@ -75,8 +68,6 @@ export const alcoholic: MessageResolver = async (msg, content, {config}) => {
   const df = 'YYYY-MM-DD'
   const dfPlus = 'YYYY-MM-DD HH:mm'
   const dfDay = 'dddd HH:mm'
-
-  console.log(openingToday, closingToday)
 
   const momOpenToday = openingToday
     ? dayjs(`${now.format(df)} ${openingToday}`, `${df} HH:mm`)

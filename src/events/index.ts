@@ -21,7 +21,8 @@ const eventsList: Array<TextEvent> = [
   },
 ]
 
-export const events: MessageResolver = async (msg, content, context) => {
+export const events: MessageResolver = async (msg, __, context) => {
+  const content = msg.content
   const event = eventsList.find((ev) => msg.content.match(ev.regex))
   event?.run(msg, content, context)
 }
