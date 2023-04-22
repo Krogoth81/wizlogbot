@@ -1,6 +1,6 @@
 import dotenv from 'dotenv'
 dotenv.config()
-import Discord, { Message, GatewayIntentBits } from 'discord.js'
+import Discord, { Message, GatewayIntentBits, ChannelType, Partials } from 'discord.js'
 import { config } from './config'
 import './init'
 import { commands } from './commands/'
@@ -30,7 +30,9 @@ const bot = new Discord.Client({
     GatewayIntentBits.GuildMessageReactions,
     GatewayIntentBits.GuildEmojisAndStickers,
     GatewayIntentBits.GuildMessageTyping,
+    GatewayIntentBits.MessageContent,
   ],
+  partials: [Partials.Channel, Partials.Message, Partials.Reaction, Partials.GuildMember, Partials.User],
 })
 
 enum RegexIndex {
@@ -83,7 +85,7 @@ const start = async () => {
     }
     const { type } = msg.channel
     switch (type) {
-      case Discord.ChannelType.GuildText: {
+      case ChannelType.GuildText: {
         if (!config.isProd) {
           console.log('CHANNEL NAME ->', msg.channel.name)
           if (msg.channel.name === 'bot-tester') {
