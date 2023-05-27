@@ -28,7 +28,7 @@ export const alcoholic: MessageResolver = async (msg, content, { config }) => {
   } = data
 
   const now = dayjs().tz('Europe/Oslo')
-
+  console.log(now.format('DD.MM.YYYY HH:mm'), dayjs.tz)
   const dayIndex = now.day() - 1 < 0 ? 6 : now.day() - 1
 
   let openingToday = regularHours[dayIndex].openingTime
