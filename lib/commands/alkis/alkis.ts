@@ -43,7 +43,7 @@ export const alcoholic: MessageResolver = async (msg, content) => {
   const dayIndex = now.day() - 1 < 0 ? 6 : now.day() - 1
 
   const getDayjsFromTime = (day: Dayjs, time: string) =>
-    time ? dayjs(`${day.format('YYYY-MM-DD')} ${time}`, dfPlus).tz() : null
+    time ? dayjs(`${day.format('YYYY-MM-DD')} ${time}`, dfPlus) : null
 
   const hours = regularHours.map((_, i) => {
     const rh = regularHours[(dayIndex + i) % regularHours.length]
@@ -71,7 +71,7 @@ export const alcoholic: MessageResolver = async (msg, content) => {
     reply += '**Unntak i åpningstider:**\n'
     hours.forEach((h) => {
       if (h.ex) {
-        const daystring = dayjs(h.ex.date, df).tz().format('dddd')
+        const daystring = dayjs(h.ex.date, df).format('dddd')
         reply += `> [${capitalize(daystring)} ${h.ex.date}]: *${h.ex.message || 'Ingen forklaring oppgitt'}*\n`
       }
     })
@@ -81,17 +81,17 @@ export const alcoholic: MessageResolver = async (msg, content) => {
 
   if (!today.open) {
     reply += 'Stengt i dag.\n'
-    reply += `Neste åpning: ${next.open.from(now)} (${capitalize(next.open.format(dfDay))})\n`
+    reply += `Neste åpning: ${next.open.tz().from(now)} (${capitalize(next.open.format(dfDay))})\n`
   } else if (today.open.isAfter(now)) {
-    reply += `Åpner ${today.open.from(now)} (${capitalize(today.open.format(dfDay))})\n`
-    reply += `Stenger ${today.close.from(now)} (${capitalize(today.close.format(dfDay))})\n`
+    reply += `Åpner ${today.open.tz().from(now)} (${capitalize(today.open.format(dfDay))})\n`
+    reply += `Stenger ${today.close.tz().from(now)} (${capitalize(today.close.format(dfDay))})\n`
   } else if (today.isOpen) {
-    reply += `Åpnet for ${today.open.from(now)} (${capitalize(today.open.format(dfDay))})\n`
-    reply += `Stenger ${today.close.from(now)} (${capitalize(today.close.format(dfDay))})\n`
+    reply += `Åpnet for ${today.open.tz().from(now)} (${capitalize(today.open.format(dfDay))})\n`
+    reply += `Stenger ${today.close.tz().from(now)} (${capitalize(today.close.format(dfDay))})\n`
   } else if (today.wasOpen) {
-    reply += `Stengte for ${today.close.from(now)} (${capitalize(today.close.format(dfDay))})\n\n`
-    reply += `Åpner igjen ${next.close.from(now)} (${capitalize(next.open.format(dfDay))})\n`
-    reply += `Og stenger ${next.close.from(now)} (${capitalize(next.close.format(dfDay))})`
+    reply += `Stengte for ${today.close.tz().from(now)} (${capitalize(today.close.format(dfDay))})\n\n`
+    reply += `Åpner igjen ${next.close.tz().from(now)} (${capitalize(next.open.format(dfDay))})\n`
+    reply += `Og stenger ${next.close.tz().from(now)} (${capitalize(next.close.format(dfDay))})`
   }
 
   msg.channel.send(reply)
