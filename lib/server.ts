@@ -1,6 +1,6 @@
 import dotenv from 'dotenv'
 dotenv.config()
-import Discord, { Message, GatewayIntentBits, ChannelType, Partials } from 'discord.js'
+import Discord, { GatewayIntentBits, ChannelType, Partials } from 'discord.js'
 import { config } from './config'
 import './init'
 import { commands } from './commands/'
@@ -11,20 +11,13 @@ import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import 'dayjs/locale/nb'
 import customParseFormat from 'dayjs/plugin/customParseFormat'
+import { MessageContext } from './types'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
 dayjs.extend(customParseFormat)
 dayjs.tz.setDefault('Europe/Oslo')
 dayjs.locale('nb')
-
-export interface MessageContext {
-  bot: Discord.Client<boolean>
-  config: typeof config
-  commands: typeof commands
-}
-
-export type MessageResolver = (msg: Message<boolean>, content?: string, context?: MessageContext) => Promise<void>
 
 const bot = new Discord.Client({
   intents: [
@@ -42,7 +35,10 @@ enum RegexIndex {
   COMMAND = 1,
   CONTENT = 2,
 }
-const commandRegex = new RegExp(`^\!(${commands.map((cm) => cm.key).join('|')})(?:$|\\s)(.*)$`, 'i')
+const commandRegex = new RegExp(
+  `^${config.isProd ? '!' : '_!'}(${commands.map((cm) => cm.key).join('|')})(?:$|\\s)(.*)$`,
+  'i',
+)
 
 const getMessageValues = (msg: Discord.Message<boolean>) => {
   const regexMatch = msg.content.match(commandRegex)

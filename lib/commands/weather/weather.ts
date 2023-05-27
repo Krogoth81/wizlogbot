@@ -1,4 +1,4 @@
-import { MessageResolver } from 'api/'
+import { MessageResolver } from 'lib/types'
 import dayjs from 'dayjs'
 import { ForecastTimeInstant, METJSONForecast } from './__generated__/locationforecast-2.0'
 

@@ -1,4 +1,4 @@
-import { MessageResolver } from '..'
+import { MessageResolver } from 'lib/types'
 import { complaint } from './complaint'
 import { drinkmore } from './drinkmore'
 import { mountain } from './mountain'

@@ -10,4 +10,4 @@ COPY --chown=node:node dist /app
 
 COPY --chown=node:node .env /app/
 
-CMD ["node", "src/index.js"]
+CMD ["node", "lib/server.js"]

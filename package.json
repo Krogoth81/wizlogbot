@@ -2,11 +2,11 @@
   "name": "logbot",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "tsc -b && node ./dist/index.js",
-    "dev": "ts-node-dev --respawn --transpile-only --watch src ./src/index.ts",
+    "start": "tsc -b && node ./dist/server.js",
+    "dev": "ts-node-dev -r tsconfig-paths/register --respawn --transpile-only --watch lib ./lib/server.ts",
     "build": "tsc"
   },
   "author": "",
@@ -22,6 +22,7 @@
     "change-case": "^4.1.2",
     "rome": "12.0.0",
     "swagger-typescript-api": "^12.0.4",
+    "ts-node": "^10.9.1",
     "ts-node-dev": "^2.0.0",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.0.4"

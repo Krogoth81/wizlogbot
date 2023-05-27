@@ -4,7 +4,7 @@
         "module": "commonjs",
         "esModuleInterop": true,
         "baseUrl": ".",
-        "rootDir": "src",
+        "rootDir": ".",
         "allowSyntheticDefaultImports": true,
         "experimentalDecorators": true,
         "inlineSourceMap": true,
@@ -12,12 +12,12 @@
         "skipLibCheck": true,
         "outDir": "dist",
         "paths": {
-          "api/*": ["src"]
+          "lib/*": ["lib/*"]
         }
     },
     "exclude": [
         "node_modules",
-        "deprecated",
+        ".vscode",
         "dist"
     ]
 }

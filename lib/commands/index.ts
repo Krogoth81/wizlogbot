@@ -1,4 +1,4 @@
-import { MessageResolver } from '..'
+import { MessageResolver } from 'lib/types'
 import { alcoholic } from './alkis'
 import { createQuiz } from './createQuiz'
 import { featureRequest } from './featureRequest'
