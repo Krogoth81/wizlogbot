@@ -39,11 +39,11 @@ export const alcoholic: MessageResolver = async (msg, content) => {
   } = data
 
   const now = dayjs()
-
+  console.log(now.format(dfPlus))
   const dayIndex = now.day() - 1 < 0 ? 6 : now.day() - 1
 
   const getDayjsFromTime = (day: Dayjs, time: string) =>
-    time ? dayjs(`${day.format('YYYY-MM-DD')} ${time}`, dfPlus).tz('Europe/Oslo') : null
+    time ? dayjs(`${day.format('YYYY-MM-DD')} ${time}`, dfPlus) : null
 
   const hours = regularHours.map((_, i) => {
     const rh = regularHours[(dayIndex + i) % regularHours.length]
