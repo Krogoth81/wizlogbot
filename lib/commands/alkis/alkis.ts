@@ -43,7 +43,7 @@ export const alcoholic: MessageResolver = async (msg, content) => {
   const dayIndex = now.day() - 1 < 0 ? 6 : now.day() - 1
 
   const getDayjsFromTime = (day: Dayjs, time: string) =>
-    time ? dayjs.tz(`${day.format('YYYY-MM-DD')} ${time}`, dfPlus) : null
+    time ? dayjs(`${day.format('YYYY-MM-DD')} ${time}`, dfPlus) : null
 
   const hours = regularHours.map((_, i) => {
     const rh = regularHours[(dayIndex + i) % regularHours.length]
@@ -79,19 +79,26 @@ export const alcoholic: MessageResolver = async (msg, content) => {
   }
   reply += `Status: ${today.isOpen ? '**Åpent**' : '**Stengt**'}\n\n`
 
-  if (!today.open) {
+  const formatDate = (date: Dayjs) => capitalize(date.format(dfDay))
+
+  const to = today.open
+  const tc = today.close
+  const no = next.open
+  const nc = next.close
+
+  if (!to) {
     reply += 'Stengt i dag.\n'
-    reply += `Neste åpning: ${next.open.from(now)} (${capitalize(next.open.format(dfDay))})\n`
-  } else if (today.open.isAfter(now)) {
-    reply += `Åpner ${today.open.from(now)} (${capitalize(today.open.format(dfDay))})\n`
-    reply += `Stenger ${today.close.from(now)} (${capitalize(today.close.format(dfDay))})\n`
+    reply += `Neste åpning: (${formatDate(no)})\n`
+  } else if (to.isAfter(now)) {
+    reply += `Åpner (${formatDate(to)})\n`
+    reply += `Stenger (${formatDate(tc)})\n`
   } else if (today.isOpen) {
-    reply += `Åpnet for ${today.open.from(now)} (${capitalize(today.open.format(dfDay))})\n`
-    reply += `Stenger ${today.close.from(now)} (${capitalize(today.close.format(dfDay))})\n`
+    reply += `Åpnet ${formatDate(to)}\n`
+    reply += `Stenger ${formatDate(tc)}\n`
   } else if (today.wasOpen) {
-    reply += `Stengte for ${today.close.from(now)} (${capitalize(today.close.format(dfDay))})\n\n`
-    reply += `Åpner igjen ${next.close.from(now)} (${capitalize(next.open.format(dfDay))})\n`
-    reply += `Og stenger ${next.close.from(now)} (${capitalize(next.close.format(dfDay))})`
+    reply += `Stengte ${formatDate(tc)}\n\n`
+    reply += `Åpner igjen ${formatDate(no)}\n`
+    reply += `Og stenger ${formatDate(nc)}`
   }
 
   msg.channel.send(reply)
