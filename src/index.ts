@@ -4,15 +4,18 @@ import Discord, { Message, GatewayIntentBits, ChannelType, Partials } from 'disc
 import { config } from './config'
 import './init'
 import { commands } from './commands/'
+import { events } from './events'
+
+import timezone from 'dayjs/plugin/timezone'
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
-import timezone from 'dayjs/plugin/timezone'
 import 'dayjs/locale/nb'
-import { events } from './events'
+import customParseFormat from 'dayjs/plugin/customParseFormat'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
-dayjs.tz.setDefault('Europe/Berlin')
+dayjs.extend(customParseFormat)
+dayjs.tz.setDefault('Europe/Oslo')
 dayjs.locale('nb')
 
 export interface MessageContext {
