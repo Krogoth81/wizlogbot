@@ -27,7 +27,7 @@ export const alcoholic: MessageResolver = async (msg, content, { config }) => {
     openingHours: { regularHours, exceptionHours },
   } = data
 
-  const now = dayjs()
+  const now = dayjs().tz('Europe/Oslo')
 
   const dayIndex = now.day() - 1 < 0 ? 6 : now.day() - 1
 
