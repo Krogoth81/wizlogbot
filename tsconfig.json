@@ -4,7 +4,7 @@
         "module": "commonjs",
         "esModuleInterop": true,
         "baseUrl": ".",
-        "rootDir": ".",
+        "rootDir": "lib",
         "allowSyntheticDefaultImports": true,
         "experimentalDecorators": true,
         "inlineSourceMap": true,
