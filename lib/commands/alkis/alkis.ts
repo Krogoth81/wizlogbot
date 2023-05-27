@@ -38,12 +38,12 @@ export const alcoholic: MessageResolver = async (msg, content) => {
     openingHours: { regularHours, exceptionHours },
   } = data
 
-  const now = dayjs()
-  console.log(now.format(dfPlus))
+  const now = dayjs().tz()
+
   const dayIndex = now.day() - 1 < 0 ? 6 : now.day() - 1
 
   const getDayjsFromTime = (day: Dayjs, time: string) =>
-    time ? dayjs(`${day.format('YYYY-MM-DD')} ${time}`, dfPlus) : null
+    time ? dayjs(`${day.format('YYYY-MM-DD')} ${time}`, dfPlus).tz() : null
 
   const hours = regularHours.map((_, i) => {
     const rh = regularHours[(dayIndex + i) % regularHours.length]
@@ -71,7 +71,7 @@ export const alcoholic: MessageResolver = async (msg, content) => {
     reply += '**Unntak i åpningstider:**\n'
     hours.forEach((h) => {
       if (h.ex) {
-        const daystring = dayjs(h.ex.date, df).format('dddd')
+        const daystring = dayjs(h.ex.date, df).tz().format('dddd')
         reply += `> [${capitalize(daystring)} ${h.ex.date}]: *${h.ex.message || 'Ingen forklaring oppgitt'}*\n`
       }
     })
