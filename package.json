@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "tsc -b && node ./dist/server.js",
+    "start": "tsc -b && cp tsconfig.json dist && ts-node -r tsconfig-paths/register ./dist/server.js",
     "dev": "ts-node-dev -r tsconfig-paths/register --respawn --transpile-only --watch lib ./lib/server.ts",
     "build": "tsc"
   },
