@@ -30,6 +30,5 @@ const eventsList: Array<TextEvent> = [
 export const events: MessageResolver = async (msg, __, context) => {
   const content = msg.content
   const event = eventsList.find((ev) => msg.content.match(ev.regex))
-  console.log(event)
   event?.run(msg, content, context)
 }
