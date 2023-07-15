@@ -2,6 +2,7 @@ import { MessageResolver } from 'lib/types'
 import { complaint } from './complaint'
 import { drinkmore } from './drinkmore'
 import { mountain } from './mountain'
+import { newthing } from './newthing'
 
 interface TextEvent {
   key: string
@@ -24,6 +25,11 @@ const eventsList: Array<TextEvent> = [
     key: 'fjellet',
     run: mountain,
     regex: /(^|\s)fjellet(\W|$)/i,
+  },
+  {
+    key: 'nydings',
+    run: newthing,
+    regex: /(^|\s)ny dings(\W|$)/i,
   },
 ]
 
