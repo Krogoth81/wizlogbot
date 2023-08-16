@@ -8,6 +8,7 @@ interface TextEvent {
   key: string
   run: MessageResolver
   regex: RegExp
+  dipsoRegex?: RegExp
 }
 
 const eventsList: Array<TextEvent> = [
@@ -30,11 +31,14 @@ const eventsList: Array<TextEvent> = [
     key: 'nydings',
     run: newthing,
     regex: /(^|\s)ny dings(\W|$)/i,
+    dipsoRegex: /(^|\s)dings(\W|$)/i,
   },
 ]
 
 export const events: MessageResolver = async (msg, __, context) => {
+  const dipsoUser = msg.author?.username?.toLowerCase().includes('dipso')
   const content = msg.content
-  const event = eventsList.find((ev) => msg.content.match(ev.regex))
+  const event = eventsList.find((ev) => msg.content.match(ev.regex) || (dipsoUser && msg.content.match(ev.dipsoRegex)))
+
   event?.run(msg, content, context)
 }
