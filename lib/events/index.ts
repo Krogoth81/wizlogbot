@@ -38,9 +38,10 @@ const eventsList: Array<TextEvent> = [
 export const events: MessageResolver = async (msg, __, context) => {
   const dipsoUser = msg.author?.username?.toLowerCase().includes('dipso')
   const content = msg.content
-  const event = eventsList.find(
+  const events = eventsList.filter(
     (ev) => msg.content.match(ev.regex) || (dipsoUser && ev.dipsoRegex && msg.content.match(ev.dipsoRegex)),
   )
-
-  event?.run(msg, content, context)
+  for (const event of events) {
+    event?.run(msg, content, context)
+  }
 }
