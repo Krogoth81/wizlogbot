@@ -93,6 +93,7 @@ const start = async () => {
         } else {
           channelMsg(msg)
         }
+        break
       }
       default:
     }
@@ -102,7 +103,10 @@ const start = async () => {
     if (newMsg.author.bot) {
       return
     }
-    if (oldMsg.content.startsWith('!settopic') && newMsg.content.startsWith('!settopic')) {
+    if (
+      oldMsg.content?.toLowerCase().startsWith('!settopic') &&
+      newMsg.content?.toLowerCase().startsWith('!settopic')
+    ) {
       if (!config.isProd) {
         return
       }
