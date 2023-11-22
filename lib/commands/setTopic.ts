@@ -44,7 +44,11 @@ export const setTopic: MessageResolver = async (msg, content) => {
           }
 
           const [day, month] = match[0].trim().split('/')
-          const date = dayjs().set('date', Number(day)).set('month', Number(month)).set('hour', 12).toDate()
+          const date = dayjs()
+            .set('date', Number(day))
+            .set('month', Number(month) - 1)
+            .set('hour', 12)
+            .toDate()
           const id = nanoid(10)
           const job = schedule.scheduleJob(date, () => {
             msg.channel.send(
