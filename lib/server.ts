@@ -99,14 +99,11 @@ const start = async () => {
     }
   })
 
-  bot.on('messageUpdate', async (oldMsg, newMsg) => {
+  bot.on('messageUpdate', async (_oldMsg, newMsg) => {
     if (newMsg.author.bot) {
       return
     }
-    if (
-      oldMsg.content?.toLowerCase().startsWith('!settopic') &&
-      newMsg.content?.toLowerCase().startsWith('!settopic')
-    ) {
+    if (newMsg.content?.toLowerCase().startsWith('!settopic')) {
       if (!config.isProd) {
         return
       }

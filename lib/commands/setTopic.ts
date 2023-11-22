@@ -3,6 +3,7 @@ import dayjs from 'dayjs'
 import { ChannelType, TextChannel } from 'discord.js'
 import { MessageResolver } from 'lib/types'
 import { nanoid } from 'nanoid'
+import util from 'util'
 
 const jobs: Array<{ id: string; job: schedule.Job; channelId: string }> = []
 
@@ -55,6 +56,7 @@ export const setTopic: MessageResolver = async (msg, content) => {
           if (job) {
             msg.react('📅')
             jobs.push({ id, job, channelId: msg.channelId })
+            console.log('Job added:', util.inspect(job, false, 5, true))
           }
         }
       }
