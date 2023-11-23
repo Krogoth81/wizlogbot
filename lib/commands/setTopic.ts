@@ -44,10 +44,13 @@ export const setTopic: MessageResolver = async (msg, content) => {
           }
 
           const [day, month] = match[0].trim().split('/')
+          const nextYear = dayjs().month() < Number(month) - 1
           const date = dayjs()
+            .startOf('day')
             .set('date', Number(day))
             .set('month', Number(month) - 1)
-            .set('hour', 12)
+            .set('hour', 11)
+            .set('year', nextYear ? dayjs().year() + 1 : dayjs().year())
             .toDate()
           const id = nanoid(10)
           const job = schedule.scheduleJob(date, () => {
