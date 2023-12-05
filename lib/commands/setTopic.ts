@@ -32,7 +32,7 @@ export const setTopic: MessageResolver = async (msg, content) => {
           }
 
           const [day, month] = match[0].trim().split('/')
-          const nextYear = dayjs().month() < Number(month) - 1
+          const nextYear = dayjs().month() > Number(month) - 1
           const date = dayjs()
             .startOf('day')
             .set('date', Number(day))
