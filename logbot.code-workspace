@@ -6,7 +6,7 @@
     ],
     "settings": {
         "editor.codeActionsOnSave": {
-            "source.fixAll": true,
+            "source.fixAll": "explicit"
         },
         "[typescriptreact]": {
             "editor.defaultFormatter": "rome.rome",
