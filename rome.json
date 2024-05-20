@@ -44,7 +44,6 @@
       },
       "nursery": {
         "useExhaustiveDependencies": "off",
-        "noInvalidConstructorSuper": "off",
         "recommended": true
       },
       "suspicious": {

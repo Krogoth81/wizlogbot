@@ -1,11 +1,31 @@
-import schedule from 'node-schedule'
 import dayjs from 'dayjs'
 import { ChannelType, TextChannel } from 'discord.js'
 import { MessageResolver } from 'lib/types'
-import { nanoid } from 'nanoid'
-import util from 'util'
+import { scheduleChannelReminder } from 'lib/services/agenda/schedules'
+import { getReminderMessageByChannelId } from 'lib/models/Schedules'
 
-const jobs: Array<{ id: string; job: schedule.Job; channelId: string }> = []
+const getDateFromTopicString = (text?: string) => {
+  if (!text) {
+    return null
+  }
+  const regex = /\s(\d{1,2}\/\d{1,2})(?:\s|$)/g
+  const match = text.match(regex)
+  if (!match) {
+    return null
+  }
+  const [day, month] = match[0].trim().split('/')
+
+  let dayjsObj = dayjs.tz(
+    `${Number(day) < 10 ? `0${day}` : day}.${Number(month) < 10 ? `0${month}` : month}`,
+    'DD.MM',
+    'Europe/Oslo',
+  )
+  if (dayjs().isAfter(dayjsObj)) {
+    dayjsObj = dayjsObj.add(1, 'year')
+  }
+  dayjsObj = dayjsObj.set('hour', 12).set('minute', 0).set('second', 0)
+  return dayjsObj.toDate()
+}
 
 export const setTopic: MessageResolver = async (msg, content) => {
   try {
@@ -16,47 +36,25 @@ export const setTopic: MessageResolver = async (msg, content) => {
         msg.react('👍')
       } catch (err) {
         console.error(err)
-        msg.reply(`Sorry mac, topic wasn't set! :rolling_eyes:\n**Here's why:**\n\`\`\`${err.message}\`\`\``)
+        await msg.reply(`Sorry mac, topic wasn't set! :rolling_eyes:\n**Here's why:**\n\`\`\`${err.message}\`\`\``)
       }
 
-      if (msg.channel.name.toLocaleLowerCase() === 'dragongate') {
-        const regex = /\s(\d{1,2}\/\d{1,2})(?:\s|$)/g
-        const match = content.match(regex)
-
-        if (match?.[0]) {
-          if (jobs.find((j) => j.channelId === msg.channelId)) {
-            jobs.splice(
-              jobs.findIndex((j) => j.channelId === msg.channelId),
-              1,
-            )
-          }
-
-          const [day, month] = match[0].trim().split('/')
-          const nextYear = dayjs().month() > Number(month) - 1
-          const date = dayjs()
-            .startOf('day')
-            .set('date', Number(day))
-            .set('month', Number(month) - 1)
-            .set('hour', 11)
-            .set('year', nextYear ? dayjs().year() + 1 : dayjs().year())
-            .toDate()
-          const id = nanoid(10)
-          const job = schedule.scheduleJob(date, () => {
-            msg.channel.send(
-              `${
-                content.split(' ')[0]
-              } Husk møte i kveld! :comet::smiley_cat:  :squid::person_raising_hand::squid:  :shield::man_beard:  :dagger::smirk_cat:`,
-            )
-          })
-          if (job) {
-            msg.react('📅')
-            jobs.push({ id, job, channelId: msg.channelId })
-            console.log('Job added:', util.inspect(job, false, 5, true))
-          }
-        }
+      const date = getDateFromTopicString(content)
+      if (date) {
+        await scheduleChannelReminder({ channelId: msg.channelId }, date)
+        const reminderMessage = await getReminderMessageByChannelId(msg.channelId)
+        msg.author.send(
+          `Added reminder for **${channel.name}** at ${dayjs
+            .tz(date, 'Europe/Oslo')
+            .format('DD.MM.YYYY HH:mm')}.\nCurrent message is:\n> ${reminderMessage}
+            \nIf this is incorrect, write \`!cancelReminder\` in **${
+              channel.name
+            }**.\nCustom message can be set/edited with \`!setReminderMessage <message>\` in the targeted channel. (Do not use emojis from other servers)`,
+        )
+        msg.react('📅')
       }
     }
-  } catch {
-    console.error('Unable to set topic!')
+  } catch (e) {
+    console.error(`Unable to set topic!\n${e.message}`)
   }
 }

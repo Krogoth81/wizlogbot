@@ -12,6 +12,7 @@ import utc from 'dayjs/plugin/utc'
 import 'dayjs/locale/nb'
 import customParseFormat from 'dayjs/plugin/customParseFormat'
 import { MessageContext } from './types'
+import { initAgenda } from './services/agenda/client'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -19,7 +20,7 @@ dayjs.extend(customParseFormat)
 dayjs.tz.setDefault('Europe/Oslo')
 dayjs.locale('nb')
 
-const bot = new Discord.Client({
+export const bot = new Discord.Client({
   intents: [
     GatewayIntentBits.Guilds,
     GatewayIntentBits.GuildMessages,
@@ -65,7 +66,7 @@ const channelMsg = async (msg: Discord.Message<boolean>) => {
     return
   }
 
-  const command = commands.find((cm) => values.command === cm.key)
+  const command = commands.find((cm) => values.command?.toLowerCase() === cm.key.toLowerCase())
 
   if (command) {
     await command.run(msg, values.content, context)
@@ -73,6 +74,9 @@ const channelMsg = async (msg: Discord.Message<boolean>) => {
 }
 
 const start = async () => {
+  const agenda = await initAgenda()
+  await agenda.start()
+
   bot.on('ready', async () => {
     console.log('READY!')
     console.log('Logged in as %s', bot.user.tag)
