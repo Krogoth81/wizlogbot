@@ -2,11 +2,12 @@ import Agenda, { Processor } from 'agenda'
 import { ScheduleTypes } from './types'
 import { bot } from 'lib/server'
 import { TextChannel } from 'discord.js'
+import { getReminderMessageByChannelId } from 'lib/models/Schedules'
 
 const channelReminder: Processor<{ channelId: string }> = async (job, done) => {
   const channel = bot.channels.cache.get(job.attrs.data.channelId) as TextChannel
-
-  await channel.send('Heya, dis is reminder yo!')
+  const message = await getReminderMessageByChannelId(job.attrs.data.channelId)
+  await channel.send(message)
   done()
 }
 
