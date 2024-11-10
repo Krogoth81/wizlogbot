@@ -12,6 +12,7 @@ import { status } from './status'
 import { whiners } from './whiners'
 import { weather } from './weather'
 import { setReminderMessage, cancelReminder } from './schedules'
+import { echo } from './echo'
 
 interface Command {
   key: string
@@ -33,4 +34,5 @@ export const commands: Array<Command> = [
   { key: 'weather', run: weather },
   { key: 'setremindermessage', run: setReminderMessage },
   { key: 'cancelreminder', run: cancelReminder },
+  { key: 'echo', run: echo }
 ]
