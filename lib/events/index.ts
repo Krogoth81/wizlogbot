@@ -1,4 +1,4 @@
-import { MessageResolver } from 'lib/types'
+import type { MessageResolver } from 'lib/types'
 import { complaint } from './complaint'
 import { drinkmore } from './drinkmore'
 import { mountain } from './mountain'
@@ -39,7 +39,9 @@ export const events: MessageResolver = async (msg, __, context) => {
   const dipsoUser = msg.author?.username?.toLowerCase().includes('dipso')
   const content = msg.content
   const events = eventsList.filter(
-    (ev) => msg.content.match(ev.regex) || (dipsoUser && ev.dipsoRegex && msg.content.match(ev.dipsoRegex)),
+    (ev) =>
+      msg.content.match(ev.regex) ||
+      (dipsoUser && ev.dipsoRegex && msg.content.match(ev.dipsoRegex)),
   )
   for (const event of events) {
     event?.run(msg, content, context)

@@ -1,6 +1,6 @@
-import { MessageResolver } from 'lib/types'
+import type { MessageResolver } from 'lib/types'
 import dayjs from 'dayjs'
-import { ForecastTimeInstant, METJSONForecast } from './__generated__/locationforecast-2.0'
+import type { ForecastTimeInstant, METJSONForecast } from './__generated__/locationforecast-2.0'
 
 const baseRadii = 11.25
 
@@ -58,7 +58,7 @@ export const weather: MessageResolver = async (msg, content) => {
   const locationUrl = `${locationBaseUrl}?${locationParams.toString()}`
 
   try {
-    let searchIndex = index ? Math.max(parseInt(index) - 1, 0) : 0
+    let searchIndex = index ? Math.max(Number.parseInt(index) - 1, 0) : 0
     const locationRes = await fetch(locationUrl)
     const locationJson = await locationRes.json()
     const numberOfHits = locationJson.navn.length

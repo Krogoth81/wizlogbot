@@ -1,9 +1,13 @@
 import { setReminderMessagebyChannelId } from 'lib/models/Schedules'
 import { cancelChannelReminder } from 'lib/services/agenda/schedules'
-import { MessageResolver } from 'lib/types'
+import type { MessageResolver } from 'lib/types'
 
 export const setReminderMessage: MessageResolver = async (msg, content) => {
-  await setReminderMessagebyChannelId({ channelId: msg.channelId, message: content, createdBy: msg.author.id })
+  await setReminderMessagebyChannelId({
+    channelId: msg.channelId,
+    message: content,
+    createdBy: msg.author.id,
+  })
   msg.react('✅')
 }
 

@@ -1,7 +1,7 @@
-import dayjs, { Dayjs } from 'dayjs'
-import { MessageResolver } from 'lib/types'
+import dayjs, { type Dayjs } from 'dayjs'
+import type { MessageResolver } from 'lib/types'
 import { config } from 'lib/config'
-import { VinmonopolInfo } from './types'
+import type { VinmonopolInfo } from './types'
 
 const df = 'YYYY-MM-DD'
 const dfPlus = 'YYYY-MM-DD HH:mm'

@@ -9,15 +9,15 @@
             "source.fixAll": "explicit"
         },
         "[typescriptreact]": {
-            "editor.defaultFormatter": "rome.rome",
+            "editor.defaultFormatter": "biomejs.biome",
             "editor.formatOnSave": true
         },
         "[typescript]": {
-            "editor.defaultFormatter": "rome.rome",
+            "editor.defaultFormatter": "biomejs.biome",
             "editor.formatOnSave": true
         },
         "[javascript]": {
-            "editor.defaultFormatter": "rome.rome",
+            "editor.defaultFormatter": "biomejs.biome",
             "editor.formatOnSave": true
         },
         "search.followSymlinks": true,
@@ -26,7 +26,7 @@
         "recommendations": [
             "graphql.vscode-graphql",
             "EditorConfig.EditorConfig",
-            "rome.rome"
+            "biomejs.biome"
         ]
     }
 }

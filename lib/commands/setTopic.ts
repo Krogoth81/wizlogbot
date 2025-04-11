@@ -1,6 +1,6 @@
 import dayjs from 'dayjs'
-import { ChannelType, TextChannel } from 'discord.js'
-import { MessageResolver } from 'lib/types'
+import { ChannelType, type TextChannel } from 'discord.js'
+import type { MessageResolver } from 'lib/types'
 import { scheduleChannelReminder } from 'lib/services/agenda/schedules'
 import { getReminderMessageByChannelId } from 'lib/models/Schedules'
 
@@ -36,7 +36,9 @@ export const setTopic: MessageResolver = async (msg, content) => {
         msg.react('👍')
       } catch (err) {
         console.error(err)
-        await msg.reply(`Sorry mac, topic wasn't set! :rolling_eyes:\n**Here's why:**\n\`\`\`${err.message}\`\`\``)
+        await msg.reply(
+          `Sorry mac, topic wasn't set! :rolling_eyes:\n**Here's why:**\n\`\`\`${err.message}\`\`\``,
+        )
       }
 
       const date = getDateFromTopicString(content)
