@@ -26,7 +26,7 @@ export const predict: MessageResolver = async (msg, content) => {
   }
   const triggerDate = dayjs.tz(date, 'YYYY-MM-DD', 'Europe/Oslo').set('hour', 12).startOf('hour')
   console.log('Trigger date: ', triggerDate.format('YYYY-MM-DD HH:mm'))
-  const dateIsInThePast = dayjs(triggerDate.startOf('day')).isBefore(dayjs().endOf('day'))
+  const dateIsInThePast = dayjs(triggerDate.startOf('day')).isBefore(dayjs().tz('Europe/Oslo').endOf('day'))
   console.log('Date is in the past', dateIsInThePast)
 
   if (dateIsInThePast) {
