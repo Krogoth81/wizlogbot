@@ -1,7 +1,7 @@
-import Agenda from 'agenda'
+import type Agenda from 'agenda'
 import { getClient } from './client'
 import { config } from 'lib/config'
-import { ReminderConfigs } from './types'
+import type { ReminderConfigs, Prediction } from './types'
 
 export const mongoClient = async () => {
   const client = await getClient()
@@ -9,5 +9,6 @@ export const mongoClient = async () => {
   return {
     ReminderConfigs: db.collection<ReminderConfigs>('reminderconfigs'),
     Agenda: db.collection<Agenda>(config.isProd ? 'agenda' : 'agendatests'),
+    Predictions: db.collection<Prediction>('predictions'),
   }
 }

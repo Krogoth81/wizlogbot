@@ -1,4 +1,4 @@
-import { MessageResolver } from 'lib/types'
+import type { MessageResolver } from 'lib/types'
 import { alcoholic } from './alkis'
 import { createQuiz } from './createQuiz'
 import { featureRequest } from './featureRequest'
@@ -13,6 +13,7 @@ import { whiners } from './whiners'
 import { weather } from './weather'
 import { setReminderMessage, cancelReminder } from './schedules'
 import { echome } from './echo'
+import { predict, predictions } from './predict'
 
 interface Command {
   key: string
@@ -34,5 +35,7 @@ export const commands: Array<Command> = [
   { key: 'weather', run: weather },
   { key: 'setremindermessage', run: setReminderMessage },
   { key: 'cancelreminder', run: cancelReminder },
-  { key: 'echome', run: echome }
+  { key: 'echome', run: echome },
+  { key: 'predict', run: predict },
+  { key: 'predictions', run: predictions },
 ]

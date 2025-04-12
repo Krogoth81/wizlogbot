@@ -24,3 +24,16 @@ export const scheduleChannelReminder = async (data: { channelId: string }, date:
 
   return res
 }
+
+export const cancelPredictionTrigger = async (predictionId: string) => {
+  const agenda = await initAgenda()
+  const res = await agenda.cancel({ name: ScheduleTypes.PREDICTION_DATE_REACHED, 'data.predictionId': predictionId })
+  return res
+}
+
+export const schedulePredictionTrigger = async (data: { predictionId: string }, date: Date) => {
+  const agenda = await initAgenda()
+  await cancelPredictionTrigger(data.predictionId)
+  const res = await agenda.schedule(date, ScheduleTypes.PREDICTION_DATE_REACHED, data)
+  return res
+}

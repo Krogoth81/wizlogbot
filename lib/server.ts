@@ -11,7 +11,7 @@ import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import 'dayjs/locale/nb'
 import customParseFormat from 'dayjs/plugin/customParseFormat'
-import { MessageContext } from './types'
+import type { MessageContext } from './types'
 import { initAgenda } from './services/agenda/client'
 
 dayjs.extend(utc)
