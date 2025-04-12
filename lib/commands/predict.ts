@@ -24,7 +24,7 @@ export const predict: MessageResolver = async (msg, content) => {
     msg.reply(`Invalid date format. ${HOW_TO_USE}`)
     return
   }
-  const triggerDate = dayjs(date).set('hour', 12).startOf('hour')
+  const triggerDate = dayjs.tz(date, 'Europe/Oslo').set('hour', 12).startOf('hour')
   const dateIsInThePast = dayjs(triggerDate.startOf('day')).isBefore(dayjs().endOf('day'))
 
   if (dateIsInThePast) {
