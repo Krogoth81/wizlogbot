@@ -49,8 +49,6 @@ interface GetPredictionsProps {
 
 export const getPredictions = async ({ guildId, includePastPredictions }: GetPredictionsProps) => {
   const mongo = await mongoClient()
-  console.log(guildId, includePastPredictions)
-
   const filter: Filter<Prediction> = {}
 
   if (guildId) {
