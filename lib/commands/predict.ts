@@ -12,7 +12,7 @@ export const predict: MessageResolver = async (msg, content) => {
   const regex = /^([^\s]*)\s(.*)$/
   const regexResult = regex.exec(content)
   const date = regexResult?.[1]
-  const predictionContent = regexResult[2]?.trim()
+  const predictionContent = regexResult?.[2]?.trim()
 
   const isDateValid = /^\d{4}-\d{2}-\d{2}$/.test(date)
 
