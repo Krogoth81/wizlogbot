@@ -18,6 +18,7 @@ export const predict: MessageResolver = async (msg, content) => {
 
   if (!date) {
     msg.reply(HOW_TO_USE)
+    return
   }
 
   if (!isDateValid) {
