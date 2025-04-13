@@ -1,12 +1,13 @@
 import dayjs from 'dayjs'
+import { AllowedMentionsTypes } from 'discord.js'
 import { config } from 'lib/config'
 import { addPrediction, getPredictions } from 'lib/models/Predictions'
+import { bot } from 'lib/server'
 import { schedulePredictionTrigger } from 'lib/services/agenda/schedules'
 import type { Prediction } from 'lib/services/mongodb/types'
 import type { MessageResolver } from 'lib/types'
 
-const HOW_TO_USE =
-  "Valid entry must be `!predict <date> <prediction>` (`!predict YYYY-MM-DD Your prediction here`)"
+const HOW_TO_USE = 'Valid entry must be `!predict <date> <prediction>` (`!predict YYYY-MM-DD Your prediction here`)'
 
 export const predict: MessageResolver = async (msg, content) => {
   const regex = /^([^\s]*)\s(.*)$/
@@ -67,9 +68,11 @@ export const predictions: MessageResolver = async (msg, content) => {
   const resolvePrediction = async (item: Prediction) => {
     const prediction = item.content
     const triggerDate = dayjs(item.triggerDate).format('YYYY-MM-DD')
-    return `\`[${triggerDate}]\` "${prediction}" (${item.messageUrl ?? '-'})`
+    const guild = bot.guilds.cache.get(item.createdInGuildId)
+    const guildMember = guild.members.cache.get(item.createdBy)
+    return `\`[${triggerDate}]\` ${guildMember.user.toString()} "${prediction}" (${item.messageUrl ?? '-'})`
   }
   const lines = await Promise.all(list.map(resolvePrediction))
 
-  msg.reply(lines.join('\n') || 'No predictions found!')
+  msg.reply({ content: lines.join('\n') || 'No predictions found!', allowedMentions: { parse: [] } })
 }
