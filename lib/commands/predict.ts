@@ -68,9 +68,8 @@ export const predictions: MessageResolver = async (msg, content) => {
   const resolvePrediction = async (item: Prediction) => {
     const prediction = item.content
     const triggerDate = dayjs(item.triggerDate).format('YYYY-MM-DD')
-    const guild = bot.guilds.cache.get(item.createdInGuildId)
-    const guildMember = guild.members.cache.get(item.createdBy)
-    return `\`[${triggerDate}]\` ${guildMember.user.toString()} "${prediction}" (${item.messageUrl ?? '-'})`
+    const user = await bot.users.fetch(item.createdBy)
+    return `\`[${triggerDate}]\` ${user?.toString()} "${prediction}" (${item.messageUrl ?? '-'})`
   }
   const lines = await Promise.all(list.map(resolvePrediction))
 
