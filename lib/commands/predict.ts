@@ -6,7 +6,7 @@ import type { Prediction } from 'lib/services/mongodb/types'
 import type { MessageResolver } from 'lib/types'
 
 const HOW_TO_USE =
-  "Valid entry must be `!predict <date> <prediction>` (`!predict YYYY-MM-DD Something that would've happend within now and this date`)"
+  "Valid entry must be `!predict <date> <prediction>` (`!predict YYYY-MM-DD Your prediction here`)"
 
 export const predict: MessageResolver = async (msg, content) => {
   const regex = /^([^\s]*)\s(.*)$/
