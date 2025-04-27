@@ -58,5 +58,5 @@ export const getPredictions = async ({ guildId, includePastPredictions }: GetPre
     filter.triggerDate = { $gte: new Date() }
   }
 
-  return mongo.Predictions.find(filter).toArray()
+  return mongo.Predictions.find(filter).sort({ triggerDate: 1 }).toArray()
 }
