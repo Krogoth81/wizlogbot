@@ -3,6 +3,7 @@ import { complaint } from './complaint'
 import { drinkmore } from './drinkmore'
 import { mountain } from './mountain'
 import { newthing } from './newthing'
+import { oled } from './oled'
 
 interface TextEvent {
   key: string
@@ -20,18 +21,23 @@ const eventsList: Array<TextEvent> = [
   {
     key: 'drekkameir',
     run: drinkmore,
-    regex: /(^|\s)drekka(\s|$)/i,
+    regex: /(^|\s|\_|\*)drekka(\_|\*|\s|$)/i,
   },
   {
     key: 'fjellet',
     run: mountain,
-    regex: /(^|\s)fjellet(\W|$)/i,
+    regex: /(^|\s|\_|\*)fjellet(\_|\*|\s|$)/i,
+  },
+  {
+    key: 'oled',
+    run: oled,
+    regex: /(^|\s|\_|\*)oled(\_|\*|\s|$)/i,
   },
   {
     key: 'nydings',
     run: newthing,
-    regex: /(^|\s)ny dings(\W|$)/i,
-    dipsoRegex: /(^|\s)dings(\W|$)/i,
+    regex: /(^|\s|\_|\*)ny dings(\_|\*|\s|$)/i,
+    dipsoRegex: /(^|\s|\_|\*)dings(\_|\*|\s|$)/i,
   },
 ]
 
@@ -39,9 +45,7 @@ export const events: MessageResolver = async (msg, __, context) => {
   const dipsoUser = msg.author?.username?.toLowerCase().includes('dipso')
   const content = msg.content
   const events = eventsList.filter(
-    (ev) =>
-      msg.content.match(ev.regex) ||
-      (dipsoUser && ev.dipsoRegex && msg.content.match(ev.dipsoRegex)),
+    (ev) => msg.content.match(ev.regex) || (dipsoUser && ev.dipsoRegex && msg.content.match(ev.dipsoRegex)),
   )
   for (const event of events) {
     event?.run(msg, content, context)
