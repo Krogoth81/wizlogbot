@@ -21,23 +21,23 @@ const eventsList: Array<TextEvent> = [
   {
     key: 'drekkameir',
     run: drinkmore,
-    regex: /(^|\s|\_|\*)drekka(\_|\*|\s|$)/i,
+    regex: /(^|[^a-zA-Z0-9]+)drekka\smeir($|[^a-zA-Z0-9]+)/i,
   },
   {
     key: 'fjellet',
     run: mountain,
-    regex: /(^|\s|\_|\*)fjellet(\_|\*|\s|$)/i,
+    regex: /(^|[^a-zA-Z0-9]+)fjellet($|[^a-zA-Z0-9]+)/i,
   },
   {
     key: 'oled',
     run: oled,
-    regex: /(^|\s|\_|\*)oled(\_|\*|\s|$)/i,
+    regex: /(^|[^a-zA-Z0-9]+)oled($|[^a-zA-Z0-9]+)/i,
   },
   {
     key: 'nydings',
     run: newthing,
-    regex: /(^|\s|\_|\*)ny dings(\_|\*|\s|$)/i,
-    dipsoRegex: /(^|\s|\_|\*)dings(\_|\*|\s|$)/i,
+    regex: /(^|[^a-zA-Z0-9]+)ny\sdings($|[^a-zA-Z0-9]+)/i,
+    dipsoRegex: /(^|[^a-zA-Z0-9]+)dings($|[^a-zA-Z0-9]+)/i,
   },
 ]
 
