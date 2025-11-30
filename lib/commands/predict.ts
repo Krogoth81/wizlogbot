@@ -1,9 +1,9 @@
 import dayjs from 'dayjs'
-import { AllowedMentionsTypes } from 'discord.js'
+import { MessageFlags } from 'discord.js'
 import { config } from 'lib/config'
-import { addPrediction, getPredictions } from 'lib/models/Predictions'
+import { addPrediction, deletePredictions, getPredictions } from 'lib/models/Predictions'
 import { bot } from 'lib/server'
-import { schedulePredictionTrigger } from 'lib/services/agenda/schedules'
+import { cancelPredictionTrigger, schedulePredictionTrigger } from 'lib/services/agenda/schedules'
 import type { Prediction } from 'lib/services/mongodb/types'
 import type { MessageResolver } from 'lib/types'
 
@@ -58,20 +58,69 @@ export const predict: MessageResolver = async (msg, content) => {
 export const predictions: MessageResolver = async (msg, content) => {
   await msg.channel.sendTyping()
   const isOwner = msg.author.id === config.ownerId
+
+  if (isOwner && content.startsWith('delete ')) {
+    const ids = content.match(/[a-zA-Z0-9]{24}/g)
+    if (ids?.length > 0) {
+      const deleteResultCount = await deletePredictions({ ids, deletedBy: msg.author.id })
+      for (const id of ids) {
+        await cancelPredictionTrigger(id)
+      }
+      msg.reply(`${deleteResultCount} message${deleteResultCount > 1 ? 's' : ''} deleted.`)
+    } else {
+      msg.reply('Missing id(s) - Correct use: `!predictions delete <id>` (seperate multiple ids in a row with a space)')
+    }
+    return
+  }
+  const help = isOwner && content.startsWith('--help')
+  if (help) {
+    msg.reply(`**Available flags for !predictions:**
+      \`delete <id>\` (owner only)
+      \`--ignore-guilds\` (owner only)
+      \`--include-outdated\` (owner only)
+      \`--limit=<number>\` (owner only)
+      \`--include-ids\` (owner only)
+      \`--mine\`
+      `)
+    return
+  }
+
   const ignoreGuilds = isOwner && content.includes('--ignore-guilds')
   const includePastPredictions = isOwner && content.includes('--include-outdated')
+  const useCustomLimit = isOwner && content.includes('--limit=')
+  const includeAuthorFilter = content.includes('--mine')
+  const includeIds = isOwner && content.includes('--include-ids')
+
+  let limit = undefined
+
+  if (useCustomLimit) {
+    const limitRegex = /--limit=([0-9]{1,2})/
+    const number = Number(limitRegex[1])
+    if (!Number.isNaN(number) && number > 0 && number < 100) {
+      limit = number
+    }
+  }
+
   const list = await getPredictions({
     guildId: ignoreGuilds ? undefined : msg.guildId,
     includePastPredictions,
+    includeAuthorFilter,
+    authorId: msg.author.id,
+    limit,
   })
 
   const resolvePrediction = async (item: Prediction) => {
     const prediction = item.content
     const triggerDate = dayjs(item.triggerDate).format('YYYY-MM-DD')
     const user = await bot.users.fetch(item.createdBy)
-    return `\`[${triggerDate}]\` ${user?.toString()} "${prediction}" (${item.messageUrl ?? '-'})`
+    const reply = `\`[${triggerDate}]\` ${user?.toString()} "${prediction}" (${item.messageUrl ?? '-'})`
+    return includeIds ? `\`${item._id}\` - ${reply}` : reply
   }
   const lines = await Promise.all(list.map(resolvePrediction))
 
-  msg.reply({ content: lines.join('\n') || 'No predictions found!', allowedMentions: { parse: [] } })
+  msg.reply({
+    content: lines.join('\n') || `${includeAuthorFilter ? "You don't have any predictions!" : 'No predictions found!'}`,
+    allowedMentions: { parse: [] },
+    flags: [MessageFlags.SuppressEmbeds],
+  })
 }

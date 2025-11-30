@@ -1,3 +1,5 @@
+import type { ObjectId } from 'mongodb'
+
 export interface ReminderConfigs {
   channelId: string
   message: string
@@ -14,6 +16,7 @@ export enum PredictionStateType {
 }
 
 export interface Prediction {
+  _id: ObjectId
   createdByMessageId: string
   createdInChannelId: string
   createdInGuildId: string
@@ -24,4 +27,7 @@ export interface Prediction {
   state: PredictionStateType
   updatedAt: Date
   messageUrl: string
+  deleted: boolean
+  deletedAt?: Date | null
+  deletedBy?: string | null
 }

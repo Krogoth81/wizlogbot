@@ -16,6 +16,10 @@ const channelReminder: Processor<{ channelId: string }> = async (job, done) => {
 
 const predictionDateReached: Processor<{ predictionId: string }> = async (job, done) => {
   const prediction = await getPredictionById(job.attrs.data.predictionId)
+  if (prediction.deleted) {
+    done()
+    return
+  }
   const channel = bot.channels.cache.get(prediction.createdInChannelId) as TextChannel
   const message = await channel.messages.fetch(prediction.createdByMessageId)
   const user = bot.users.resolve(prediction.createdBy)
