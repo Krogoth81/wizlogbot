@@ -21,7 +21,7 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
           # port defaults to 22; add an SSH_PORT secret + `port:` line if yours differs.
-          script_stop: true # abort the deploy on the first failing command
+          # `set -euo pipefail` in the script gives abort-on-first-error.
           script: |
             set -euo pipefail
             cd /home/magne/wizlogbot
