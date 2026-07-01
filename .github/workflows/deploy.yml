@@ -1,0 +1,43 @@
+name: Deploy to VM
+
+on:
+  push:
+    branches: [master]
+  workflow_dispatch: {} # allows a manual "Run workflow" button too
+
+# Never let two deploys run at once; a newer push supersedes an in-flight one.
+concurrency:
+  group: deploy-master
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy over SSH
+        uses: appleboy/ssh-action@v1.2.2
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          # port defaults to 22; add an SSH_PORT secret + `port:` line if yours differs.
+          script_stop: true # abort the deploy on the first failing command
+          script: |
+            set -euo pipefail
+            cd /home/magne/wizlogbot
+
+            # Force the checkout to exactly match origin/master (discards stray
+            # local edits on the VM). .env is gitignored, so it's left untouched.
+            git fetch --prune origin
+            git reset --hard origin/master
+
+            # Install deps in case the lockfile changed (e.g. the new chrono-node).
+            yarn install --frozen-lockfile
+
+            # Replace the running bot under a stable name so redeploys are
+            # idempotent. The first deploy also clears the original auto-named
+            # "yarn dev" process (pm2 id 0); both deletes are no-ops otherwise.
+            pm2 delete "yarn dev" 2>/dev/null || true
+            pm2 delete wizlogbot 2>/dev/null || true
+            pm2 start "yarn dev" --name wizlogbot
+            pm2 save
