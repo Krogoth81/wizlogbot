@@ -81,6 +81,8 @@ const WORDS: Rule[] = [
   [new RegExp(`(?<![\\p{L}])om\\s+${numToken}\\s+uker?(?![\\p{L}])`, 'giu'), (_m, n) => `in ${toNum(n)} week${toNum(n) === 1 ? '' : 's'}`],
   [new RegExp(`(?<![\\p{L}])om\\s+${numToken}\\s+timer?(?![\\p{L}])`, 'giu'), (_m, n) => `in ${toNum(n)} hour${toNum(n) === 1 ? '' : 's'}`],
   [new RegExp(`(?<![\\p{L}])om\\s+${numToken}\\s+måneder?(?![\\p{L}])`, 'giu'), (_m, n) => `in ${toNum(n)} month${toNum(n) === 1 ? '' : 's'}`],
+  // "år" is invariant in Norwegian (same for singular and plural), so no suffix.
+  [new RegExp(`(?<![\\p{L}])om\\s+${numToken}\\s+år(?![\\p{L}])`, 'giu'), (_m, n) => `in ${toNum(n)} year${toNum(n) === 1 ? '' : 's'}`],
   // prepositions / filler
   [/(?<![\p{L}])på(?![\p{L}])/giu, 'on'],
   [/(?<![\p{L}])den(?![\p{L}])/giu, ''],
