@@ -34,6 +34,7 @@ export const addPrediction = async ({
     createdInGuildId: guildId,
     updatedAt: new Date(),
     messageUrl,
+    replyMessageId: null,
     deleted: false,
     deletedAt: null,
     deletedBy: null,
@@ -44,6 +45,38 @@ export const addPrediction = async ({
 export const getPredictionById = async (id: string) => {
   const mongo = await mongoClient()
   return mongo.Predictions.findOne({ _id: new ObjectId(id) })
+}
+
+// Used by the edit path: when a user edits their original `!predict` message,
+// the command re-runs and looks up the prediction it originally created by that
+// message's id, so it can update in place instead of inserting a duplicate.
+export const getPredictionByMessageId = async (messageId: string) => {
+  const mongo = await mongoClient()
+  return mongo.Predictions.findOne({ createdByMessageId: messageId, deleted: false })
+}
+
+export const updatePrediction = async ({
+  id,
+  content,
+  triggerDate,
+}: {
+  id: string
+  content: string
+  triggerDate: Date
+}) => {
+  const mongo = await mongoClient()
+  const res = await mongo.Predictions.updateOne(
+    { _id: new ObjectId(id), deleted: false },
+    { $set: { content, triggerDate, updatedAt: new Date() } },
+  )
+  return res.modifiedCount
+}
+
+// Records which message the bot's confirmation reply is, so a later edit can
+// update that reply in place.
+export const setPredictionReplyMessageId = async ({ id, replyMessageId }: { id: string; replyMessageId: string }) => {
+  const mongo = await mongoClient()
+  await mongo.Predictions.updateOne({ _id: new ObjectId(id) }, { $set: { replyMessageId } })
 }
 
 interface GetPredictionsProps {

@@ -104,19 +104,42 @@ const start = async () => {
   })
 
   bot.on('messageUpdate', async (_oldMsg, newMsg) => {
-    if (newMsg.author.bot) {
+    if (newMsg.author?.bot || !newMsg.content) {
       return
     }
-    if (newMsg.content?.toLowerCase().startsWith('!settopic')) {
-      if (!config.isProd) {
-        return
+    const message = newMsg as Discord.Message<boolean>
+    const values = getMessageValues(message)
+    if (!values) {
+      return
+    }
+    const command = commands.find((cm) => cm.key === values.command)
+    if (!command) {
+      return
+    }
+
+    // Only a couple of commands react to message edits.
+    switch (command.key) {
+      case 'settopic': {
+        if (!config.isProd) {
+          return
+        }
+        await command.run(message, values.content)
+        break
       }
-      const values = getMessageValues(newMsg as Discord.Message<boolean>)
-      const command = commands.find((cm) => cm.key === values.command)
-      if (!command) {
-        return
+      case 'predict': {
+        // Re-runs predict so editing a `!predict` message updates the stored
+        // prediction (predict enforces its own 10-minute edit window). Mirror
+        // the create-path channel gating so dev only reacts in #bot-tester.
+        if (message.channel.type !== ChannelType.GuildText) {
+          return
+        }
+        if (!config.isProd && message.channel.name !== 'bot-tester') {
+          return
+        }
+        await command.run(message, values.content)
+        break
       }
-      await command.run(newMsg as Discord.Message<boolean>, values.content)
+      default:
     }
   })
 

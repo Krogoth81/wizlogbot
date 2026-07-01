@@ -27,6 +27,9 @@ export interface Prediction {
   state: PredictionStateType
   updatedAt: Date
   messageUrl: string
+  // Id of the bot's own confirmation reply, so an edit to the source message can
+  // update that reply in place instead of posting a new one.
+  replyMessageId?: string | null
   deleted: boolean
   deletedAt?: Date | null
   deletedBy?: string | null
