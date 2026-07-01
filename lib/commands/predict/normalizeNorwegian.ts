@@ -76,6 +76,7 @@ const WORDS: Rule[] = [
   [/(?<![\p{L}])november(?![\p{L}])/giu, 'november'],
   [/(?<![\p{L}])desember(?![\p{L}])/giu, 'december'],
   // durations
+  [new RegExp(`(?<![\\p{L}])om\\s+${numToken}\\s+sekund(?:er)?(?![\\p{L}])`, 'giu'), (_m, n) => `in ${toNum(n)} second${toNum(n) === 1 ? '' : 's'}`],
   [new RegExp(`(?<![\\p{L}])om\\s+${numToken}\\s+minutt(?:er)?(?![\\p{L}])`, 'giu'), (_m, n) => `in ${toNum(n)} minute${toNum(n) === 1 ? '' : 's'}`],
   [new RegExp(`(?<![\\p{L}])om\\s+${numToken}\\s+dager?(?![\\p{L}])`, 'giu'), (_m, n) => `in ${toNum(n)} day${toNum(n) === 1 ? '' : 's'}`],
   [new RegExp(`(?<![\\p{L}])om\\s+${numToken}\\s+uker?(?![\\p{L}])`, 'giu'), (_m, n) => `in ${toNum(n)} week${toNum(n) === 1 ? '' : 's'}`],
