@@ -6,13 +6,13 @@ import './init'
 import { commands } from './commands/'
 import { events } from './events'
 
-import timezone from 'dayjs/plugin/timezone'
 import dayjs from 'dayjs'
+import timezone from 'dayjs/plugin/timezone'
 import utc from 'dayjs/plugin/utc'
 import 'dayjs/locale/nb'
 import customParseFormat from 'dayjs/plugin/customParseFormat'
+import { startScheduler } from './services/agenda/client'
 import type { MessageContext } from './types'
-import { initAgenda } from './services/agenda/client'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -74,12 +74,17 @@ const channelMsg = async (msg: Discord.Message<boolean>) => {
 }
 
 const start = async () => {
-  const agenda = await initAgenda()
-  await agenda.start()
-
-  bot.on('ready', async () => {
+  // Scheduled jobs post to Discord, and Agenda starts processing overdue work
+  // the moment it starts. Gating on 'ready' means a restart with a backlog can
+  // never fire jobs against a client that isn't logged in yet.
+  bot.once('ready', async () => {
     console.log('READY!')
     console.log('Logged in as %s', bot.user.tag)
+    try {
+      await startScheduler()
+    } catch (error) {
+      console.error(new Date(), 'Failed to start scheduler', error)
+    }
   })
 
   bot.on('messageCreate', async (msg) => {
@@ -145,6 +150,19 @@ const start = async () => {
 
   bot.on('error', (error) => {
     console.error(new Date(), error)
+  })
+
+  // Most sends in this codebase are fire-and-forget, and an unhandled rejection
+  // terminates the process on Node 18 — which would take the in-memory send
+  // queue with it. Log and keep running instead.
+  process.on('unhandledRejection', (error) => {
+    console.error(new Date(), 'unhandledRejection', error)
+  })
+
+  // discord.js queues and retries 429s internally, so this is the only way to
+  // find out we are being throttled.
+  bot.rest.on('rateLimited', (info) => {
+    console.warn(new Date(), 'RATE LIMITED', info)
   })
 
   bot.login(config.dicordClientToken)

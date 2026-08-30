@@ -35,6 +35,9 @@ export const addPrediction = async ({
     updatedAt: new Date(),
     messageUrl,
     replyMessageId: null,
+    postedAt: null,
+    postAttempts: 0,
+    postAbandonedReason: null,
     deleted: false,
     deletedAt: null,
     deletedBy: null,
@@ -79,6 +82,72 @@ export const setPredictionReplyMessageId = async ({ id, replyMessageId }: { id: 
   await mongo.Predictions.updateOne({ _id: new ObjectId(id) }, { $set: { replyMessageId } })
 }
 
+// --- Delivery tracking -------------------------------------------------------
+
+// Marks a prediction as actually posted to Discord. Called immediately after a
+// successful send; until this lands the sweep will keep retrying the delivery.
+export const markPredictionPosted = async (id: string) => {
+  const mongo = await mongoClient()
+  await mongo.Predictions.updateOne(
+    { _id: new ObjectId(id) },
+    { $set: { postedAt: new Date(), updatedAt: new Date() } },
+  )
+}
+
+// A send failed. Transient failures just bump the counter and stay eligible for
+// the next sweep; a reason means "never retry this again".
+export const recordPostFailure = async ({ id, reason }: { id: string; reason?: string }) => {
+  const mongo = await mongoClient()
+  await mongo.Predictions.updateOne(
+    { _id: new ObjectId(id) },
+    {
+      $inc: { postAttempts: 1 },
+      $set: { updatedAt: new Date(), postAbandonedReason: reason ?? null },
+    },
+  )
+}
+
+// Everything that should have been posted by `now` but hasn't been. This is the
+// recovery path for downtime, crashes mid-send and transient Discord failures.
+export const findDuePredictions = async (limit: number) => {
+  const mongo = await mongoClient()
+  return mongo.Predictions.find({
+    deleted: false,
+    // `$exists: true` matters: in Mongo a bare `null` match also matches
+    // documents where the field is absent, which is every prediction created
+    // before delivery tracking existed. Requiring the field means that if the
+    // backfill ever fails to run, the sweep quietly finds nothing rather than
+    // re-posting the entire history into the channel.
+    postedAt: { $exists: true, $eq: null },
+    postAbandonedReason: null,
+    triggerDate: { $lte: new Date() },
+  })
+    .sort({ triggerDate: 1 })
+    .limit(limit)
+    .toArray()
+}
+
+// One-time migration, safe to run on every boot: `postedAt: { $exists: false }`
+// stops matching once a doc has been touched.
+//
+// Order matters. Predictions that already triggered predate delivery tracking
+// and we have no record of whether they posted, so they are backfilled as
+// delivered first — otherwise the very first sweep would re-post years of
+// history into the channel.
+export const backfillDeliveryFields = async () => {
+  const mongo = await mongoClient()
+  const past = await mongo.Predictions.updateMany({ postedAt: { $exists: false }, triggerDate: { $lt: new Date() } }, [
+    { $set: { postedAt: '$triggerDate', postAttempts: 0, postAbandonedReason: null } },
+  ])
+  const future = await mongo.Predictions.updateMany(
+    { postedAt: { $exists: false } },
+    { $set: { postedAt: null, postAttempts: 0, postAbandonedReason: null } },
+  )
+  if (past.modifiedCount || future.modifiedCount) {
+    console.log(new Date(), `Backfilled delivery fields: ${past.modifiedCount} past, ${future.modifiedCount} pending`)
+  }
+}
+
 interface GetPredictionsProps {
   guildId?: string
   includePastPredictions: boolean
@@ -106,7 +175,6 @@ export const getPredictions = async ({
   if (!includePastPredictions) {
     filter.triggerDate = { $gte: new Date() }
   }
-  console.log(filter)
   return mongo.Predictions.find(filter).sort({ triggerDate: 1 }).limit(limit).toArray()
 }
 
