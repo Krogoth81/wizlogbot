@@ -9,6 +9,7 @@ import { randomLog } from './randomLog'
 import { searchLogs } from './searchLogs'
 import { setTopic } from './setTopic'
 import { status } from './status'
+import { ukenr } from './ukenr'
 import { whiners } from './whiners'
 import { weather } from './weather'
 import { setReminderMessage, cancelReminder } from './schedules'
@@ -31,6 +32,7 @@ export const commands: Array<Command> = [
   { key: 'searchlogs', run: searchLogs },
   { key: 'settopic', run: setTopic },
   { key: 'status', run: status },
+  { key: 'ukenr', run: ukenr },
   { key: 'whiners', run: whiners },
   { key: 'weather', run: weather },
   { key: 'setremindermessage', run: setReminderMessage },
